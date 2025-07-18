@@ -26,6 +26,10 @@ public class Main extends Application {
                 case A -> game.setMoveLeft(true);
                 case S -> game.setMoveDown(true);
                 case D -> game.setMoveRight(true);
+                case UP -> game.setMoveUp(true);
+                case LEFT -> game.setMoveLeft(true);
+                case RIGHT -> game.setMoveRight(true);
+                case DOWN -> game.setMoveDown(true);
             }
         });
 
@@ -35,6 +39,10 @@ public class Main extends Application {
                 case A -> game.setMoveLeft(false);
                 case S -> game.setMoveDown(false);
                 case D -> game.setMoveRight(false);
+                case UP -> game.setMoveUp(false);
+                case LEFT -> game.setMoveLeft(false);
+                case RIGHT -> game.setMoveRight(false);
+                case DOWN -> game.setMoveDown(false);
             }
         });
     }

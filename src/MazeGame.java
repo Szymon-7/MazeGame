@@ -4,6 +4,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.animation.AnimationTimer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class MazeGame extends Pane {
@@ -11,8 +14,8 @@ public class MazeGame extends Pane {
     private GraphicsContext gc;
     Random random = new Random();
 
-    private double playerX = random.nextInt(730 - 0 + 1) + 0;
-    private double playerY = random.nextInt(730 - 0 + 1) + 0;
+    private double playerX = 367.5;
+    private double playerY = 367.5;
     private int playerSize = 20;
 
     private boolean moveUp, moveDown, moveLeft, moveRight;
@@ -45,27 +48,8 @@ public class MazeGame extends Pane {
         heightProperty().addListener((obs, oldH, newH) -> centerCanvas());
         centerCanvas();
 
-        for(int row = 0; row < rows; row++) {
-            for(int col = 0; col < cols; col++) {
-                grid[row][col] = new Cell();
-            }
-        }
-
-        for(int row = 0; row < rows; row++) {
-            for(int col = 0; col < cols; col++) {
-                if(row % 2 != 0 && col % 2 != 0) {
-                    grid[row][col].top = false;
-                    grid[row][col].bottom = false;
-                    grid[row][col].left = false;
-                    grid[row][col].right = false;
-
-                    if (row > 0) grid[row - 1][col].bottom = false;
-                    if (row < rows - 1) grid[row + 1][col].top = false;
-                    if (col > 0) grid[row][col - 1].right = false;
-                    if (col < cols - 1) grid[row][col + 1].left = false;
-                }
-            }
-        }
+        initGrid();
+        generateMazeDFS(grid[0][0]);
     }
 
     public void startGameLoop() {
@@ -88,7 +72,7 @@ public class MazeGame extends Pane {
     private void render() {
         gc.clearRect(0, 0, 750 + wallThickness, 750 + wallThickness);
 
-        gc.setFill(Color.GRAY);
+        gc.setFill(Color.LIGHTGRAY);
         gc.fillRect(0, 0, 750 + wallThickness, 750 + wallThickness);
 
         gc.setFill(Color.RED);
@@ -100,7 +84,7 @@ public class MazeGame extends Pane {
                 int x = col * cellSize + wallThickness/2;
                 int y = row * cellSize + wallThickness/2;
 
-                gc.setStroke(Color.GREEN);
+                gc.setStroke(Color.LIMEGREEN);
                 gc.setLineWidth(wallThickness);
 
                 if(cell.top) gc.strokeLine(x, y, x + cellSize, y);
@@ -170,5 +154,52 @@ public class MazeGame extends Pane {
             return (topWall && leftWall || cornerWall) && touchingCorner;
         }
         return false;
+    }
+
+    private void initGrid() {
+        for(int row = 0; row < rows; row++) {
+            for(int col = 0; col < cols; col++) {
+                grid[row][col] = new Cell(row, col);
+            }
+        }
+    }
+
+    private void removeWall(Cell current, Cell next) {
+        if (next.row < current.row) {           // Next is above
+            current.top = false;
+            next.bottom = false;
+        } else if (next.row > current.row) {    // Next is below
+            current.bottom = false;
+            next.top = false;
+        } else if (next.col < current.col) {    // Next is left
+            current.left = false;
+            next.right = false;
+        } else if (next.col > current.col) {    // Next is right
+            current.right = false;
+            next.left = false;
+        }
+    }
+
+    private List<Cell> getShuffledNeighbors(Cell cell) {
+        List<Cell> neighbors = new ArrayList<>();
+
+        if (cell.row > 0) neighbors.add(grid[cell.row - 1][cell.col]);            // Above neighbor
+        if (cell.row < rows - 1) neighbors.add(grid[cell.row + 1][cell.col]);     // Below neighbor
+        if (cell.col > 0) neighbors.add(grid[cell.row][cell.col - 1]);            // Left neighbor
+        if (cell.col < cols - 1) neighbors.add(grid[cell.row][cell.col + 1]);     // Right neighbor
+
+        Collections.shuffle(neighbors);
+        return neighbors;
+    }
+
+    private void generateMazeDFS(Cell cell) {
+        cell.visited = true;
+
+        for (Cell neighbor : getShuffledNeighbors(cell)) {
+            if (!neighbor.visited) {
+                removeWall(cell, neighbor);
+                generateMazeDFS(neighbor);
+            }
+        }
     }
 }
