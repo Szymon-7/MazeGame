@@ -22,27 +22,19 @@ public class Main extends Application {
 
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
-                case W -> game.setMoveUp(true);
-                case A -> game.setMoveLeft(true);
-                case S -> game.setMoveDown(true);
-                case D -> game.setMoveRight(true);
-                case UP -> game.setMoveUp(true);
-                case LEFT -> game.setMoveLeft(true);
-                case RIGHT -> game.setMoveRight(true);
-                case DOWN -> game.setMoveDown(true);
+                case W, UP -> game.setMoveUp(true);
+                case A, LEFT -> game.setMoveLeft(true);
+                case S, DOWN -> game.setMoveDown(true);
+                case D, RIGHT -> game.setMoveRight(true);
             }
         });
 
         scene.setOnKeyReleased(e -> {
             switch (e.getCode()) {
-                case W -> game.setMoveUp(false);
-                case A -> game.setMoveLeft(false);
-                case S -> game.setMoveDown(false);
-                case D -> game.setMoveRight(false);
-                case UP -> game.setMoveUp(false);
-                case LEFT -> game.setMoveLeft(false);
-                case RIGHT -> game.setMoveRight(false);
-                case DOWN -> game.setMoveDown(false);
+                case W, UP -> game.setMoveUp(false);
+                case A, LEFT -> game.setMoveLeft(false);
+                case S, DOWN -> game.setMoveDown(false);
+                case D, RIGHT -> game.setMoveRight(false);
             }
         });
     }

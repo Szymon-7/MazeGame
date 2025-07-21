@@ -132,10 +132,10 @@ public class MazeGame extends Pane {
 
     private boolean checkWallCollision(Cell cell, double top, double bottom, double left, double right,
                                     double cellTop, double cellBottom, double cellLeft, double cellRight) {
-        if (cell.top && top < cellTop + wallThickness && bottom > cellTop) return true;
-        if (cell.bottom && bottom > cellBottom - 1 && top < cellBottom) return true;
-        if (cell.left && left < cellLeft + wallThickness && right > cellLeft) return true;
-        if (cell.right && right > cellRight - 1 && left < cellRight) return true;
+        if (cell.top && top < cellTop + wallThickness - 1 && bottom > cellTop) return true;
+        if (cell.bottom && bottom > cellBottom && top < cellBottom) return true;
+        if (cell.left && left < cellLeft + wallThickness - 1 && right > cellLeft) return true;
+        if (cell.right && right > cellRight && left < cellRight) return true;
         return false;
     }
 
@@ -147,13 +147,14 @@ public class MazeGame extends Pane {
 
             boolean topWall = above.bottom;
             boolean leftWall = leftCell.right;
-            boolean cornerWall = corner.bottom && corner.right;
+            boolean cornerWall = corner.bottom || corner.right;
 
-            boolean touchingCorner = top < (row * cellSize) + wallThickness && left < (col * cellSize) + wallThickness;
+            boolean touchingCorner = top < (row * cellSize) + wallThickness - 1 && left < (col * cellSize) + wallThickness - 1;
 
             return (topWall && leftWall || cornerWall) && touchingCorner;
         }
         return false;
+        
     }
 
     private void initGrid() {
