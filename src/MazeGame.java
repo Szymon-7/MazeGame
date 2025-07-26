@@ -70,19 +70,19 @@ public class MazeGame extends Pane {
     }
 
     private void render() {
+        double offsetX = (canvas.getWidth() / 2) - (playerX + playerSize / 2);
+        double offsetY = (canvas.getHeight() / 2) - (playerY + playerSize / 2);
+
         gc.clearRect(0, 0, 750 + wallThickness, 750 + wallThickness);
 
         gc.setFill(Color.LIGHTGRAY);
         gc.fillRect(0, 0, 750 + wallThickness, 750 + wallThickness);
 
-        gc.setFill(Color.RED);
-        gc.fillRect(playerX, playerY, playerSize, playerSize);
-
         for(int row = 0; row < rows; row++) {
             for(int col = 0; col < cols; col++) {
                 Cell cell = grid[row][col];
-                int x = col * cellSize + wallThickness/2;
-                int y = row * cellSize + wallThickness/2;
+                double x = col * cellSize + wallThickness / 2 + offsetX;
+                double y = row * cellSize + wallThickness / 2 + offsetY;
 
                 gc.setStroke(Color.LIMEGREEN);
                 gc.setLineWidth(wallThickness);
@@ -93,6 +93,9 @@ public class MazeGame extends Pane {
                 if(cell.right) gc.strokeLine(x + cellSize, y, x + cellSize, y + cellSize);
             }
         }
+
+        gc.setFill(Color.RED);
+        gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
     }
 
     public boolean canMove(double dx, double dy, int playerSize, int cellSize) {
