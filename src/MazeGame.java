@@ -2,17 +2,18 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.animation.AnimationTimer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class MazeGame extends Pane {
     private Canvas canvas;
     private GraphicsContext gc;
-    Random random = new Random();
 
     private double playerX = 367.5;
     private double playerY = 367.5;
@@ -41,6 +42,7 @@ public class MazeGame extends Pane {
     public MazeGame() {
         canvas = new Canvas(750 + wallThickness, 750 + wallThickness);
         gc = canvas.getGraphicsContext2D();
+
         getChildren().add(canvas);
 
         // Center the canvas within this Pane
@@ -96,6 +98,8 @@ public class MazeGame extends Pane {
 
         gc.setFill(Color.RED);
         gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
+
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50);
     }
 
     public boolean canMove(double dx, double dy, int playerSize, int cellSize) {
@@ -205,5 +209,20 @@ public class MazeGame extends Pane {
                 generateMazeDFS(neighbor);
             }
         }
+    }
+
+    private void drawFog(GraphicsContext gc, double centerX, double centerY, double radius) {
+        RadialGradient gradient = new RadialGradient(
+            0, 0,             // focusAngle, focusDistance
+            centerX, centerY,  // center X, Y
+            radius,            // radius
+            false,             // proportional (false because we use pixels)
+            CycleMethod.NO_CYCLE,
+            new Stop(0, Color.rgb(0, 0, 0, 0)),       // fully transparent in center
+            new Stop(1, Color.rgb(0, 0, 0, 1))     // mostly opaque at edges
+        );
+
+        gc.setFill(gradient);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 }

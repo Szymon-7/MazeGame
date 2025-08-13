@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -13,9 +14,11 @@ public class Main extends Application {
         StackPane.setAlignment(game, Pos.CENTER);
 
         Scene scene = new Scene(root, 750 + game.wallThickness, 750 + game.wallThickness);
+        scene.setFill(Color.BLACK);
         stage.setScene(scene);
         stage.setTitle("Maze Runner");
         stage.setFullScreen(true);
+        stage.setFullScreenExitHint("");
         stage.show();
 
         game.startGameLoop(); // starts AnimationTimer or input handling
