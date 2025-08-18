@@ -2,6 +2,7 @@ public class Cell {
    boolean top = true, bottom = true, left = true, right = true;
    boolean visited = false;
    boolean visible = false;
+   boolean hasCoin = false;
 
    int row, col;
 

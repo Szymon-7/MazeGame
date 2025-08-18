@@ -5,11 +5,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
 import javafx.animation.AnimationTimer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class MazeGame extends Pane {
     private Canvas canvas;
@@ -18,6 +21,8 @@ public class MazeGame extends Pane {
     private double playerX = 367.5;
     private double playerY = 367.5;
     private int playerSize = 20;
+
+    private int coins = 0;
 
     private boolean moveUp, moveDown, moveLeft, moveRight;
     public void setMoveUp(boolean value) { moveUp = value; }
@@ -38,7 +43,6 @@ public class MazeGame extends Pane {
         canvas.setLayoutY(y);
     }
 
-
     public MazeGame() {
         canvas = new Canvas(750 + wallThickness, 750 + wallThickness);
         gc = canvas.getGraphicsContext2D();
@@ -52,6 +56,7 @@ public class MazeGame extends Pane {
 
         initGrid();
         generateMazeDFS(grid[0][0]);
+        generateCoins(10);
     }
 
     public void startGameLoop() {
@@ -69,6 +74,8 @@ public class MazeGame extends Pane {
         if(moveDown && canMove(0, 1, playerSize, cellSize)) playerY += 1;
         if(moveLeft && canMove(-1, 0, playerSize, cellSize)) playerX -= 1;
         if(moveRight && canMove(1, 0, playerSize, cellSize)) playerX += 1;
+
+        checkCoinCollisions();
     }
 
     private void render() {
@@ -93,6 +100,9 @@ public class MazeGame extends Pane {
                 if(cell.bottom) gc.strokeLine(x, y + cellSize, x + cellSize, y + cellSize);
                 if(cell.left) gc.strokeLine(x, y, x, y + cellSize);
                 if(cell.right) gc.strokeLine(x + cellSize, y, x + cellSize, y + cellSize);
+
+                gc.setFill(Color.GOLD);
+                if(cell.hasCoin) gc.fillOval(x + cellSize/3, y + cellSize/3, cellSize/3, cellSize/3);
             }
         }
 
@@ -100,6 +110,12 @@ public class MazeGame extends Pane {
         gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
 
         drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50);
+
+        Text text = new Text("COINS: " + coins);
+        text.setFont(gc.getFont());
+        gc.setFill(Color.GOLD);
+        gc.setFont(Font.font("Verdana", 20));
+        gc.fillText("COINS: " + coins, (canvas.getWidth() - text.getLayoutBounds().getWidth()) / 2, canvas.getHeight() - 25);
     }
 
     public boolean canMove(double dx, double dy, int playerSize, int cellSize) {
@@ -224,5 +240,53 @@ public class MazeGame extends Pane {
 
         gc.setFill(gradient);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
+    private void generateCoins(int maxCoins) {
+        Random random = new Random();
+        int numOfCoins = random.nextInt(maxCoins + 1);    // Random num between 0 and max (coins)
+        int row, col;
+
+        for(int i = 0; i < numOfCoins; i++) {
+            do {
+                row = random.nextInt(15);   // Random num between 0 and 14 (rows & cols)
+                col = random.nextInt(15); 
+            } while (grid[row][col].hasCoin == true);   // No repeats/overlap
+
+            grid[row][col].hasCoin = true;
+        }
+    }
+
+    private void checkCoinCollisions() {
+        double playerLeft = playerX;
+        double playerRight = playerX + playerSize;
+        double playerTop = playerY;
+        double playerBottom = playerY + playerSize;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                Cell cell = grid[row][col];
+                if (!cell.hasCoin) continue;
+
+                // Coin position & radius
+                double coinX = col * cellSize + cellSize / 3.0;
+                double coinY = row * cellSize + cellSize / 3.0;
+                double coinRadius = cellSize / 6.0;
+
+                // Closest point on player to coin center
+                double closestX = Math.max(playerLeft, Math.min(coinX + coinRadius, playerRight));
+                double closestY = Math.max(playerTop, Math.min(coinY + coinRadius, playerBottom));
+
+                // Distance from coin center
+                double dx = (coinX + coinRadius) - closestX;
+                double dy = (coinY + coinRadius) - closestY;
+
+                // Coin pickup with efficient formula
+                if (dx * dx + dy * dy < coinRadius * coinRadius) {
+                    cell.hasCoin = false;
+                    coins++;
+                }
+            }
+        }
     }
 }
