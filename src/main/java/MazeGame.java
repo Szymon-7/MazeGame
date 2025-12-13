@@ -81,14 +81,12 @@ public class MazeGame extends Pane {
     }
 
     private void update(double dt) {
-        int pixelsToMove = (int) Math.round(PLAYER_SPEED * dt);
+        double distance = PLAYER_SPEED * dt;
 
-        for (int i = 0; i < pixelsToMove; i++) {
-            if (moveUp    && canMove(0, -1, playerSize, cellSize)) playerY -= 1;
-            if (moveDown  && canMove(0,  1, playerSize, cellSize)) playerY += 1;
-            if (moveLeft  && canMove(-1, 0, playerSize, cellSize)) playerX -= 1;
-            if (moveRight && canMove( 1, 0, playerSize, cellSize)) playerX += 1;
-        }
+        if (moveUp && canMove(0, -distance, playerSize, cellSize)) playerY -= distance;
+        if (moveDown && canMove(0, distance, playerSize, cellSize)) playerY += distance;
+        if (moveLeft && canMove(-distance, 0, playerSize, cellSize)) playerX -= distance;
+        if (moveRight && canMove(distance, 0, playerSize, cellSize)) playerX += distance;
 
         checkCoinCollisions();
     }
