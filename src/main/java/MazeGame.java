@@ -7,6 +7,7 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
+import javafx.scene.image.Image;
 import javafx.animation.AnimationTimer;
 
 import java.util.ArrayList;
@@ -36,7 +37,10 @@ public class MazeGame extends Pane {
     private int cols = 15;
     Cell[][] grid = new Cell[rows][cols];
     private int cellSize = 50;
-    public int wallThickness = 5;
+    private int wallThickness = 5;
+    private Image floorTexture;
+
+    public int getWallThickness() { return wallThickness; }
 
     private void centerCanvas() {
         double x = (getWidth() - canvas.getWidth()) / 2;
@@ -48,6 +52,8 @@ public class MazeGame extends Pane {
     public MazeGame() {
         canvas = new Canvas(750 + wallThickness, 750 + wallThickness);
         gc = canvas.getGraphicsContext2D();
+
+        floorTexture = new Image(getClass().getResource("/textures/floor.png").toExternalForm());
 
         getChildren().add(canvas);
 
@@ -97,16 +103,16 @@ public class MazeGame extends Pane {
 
         gc.clearRect(0, 0, 750 + wallThickness, 750 + wallThickness);
 
-        gc.setFill(Color.LIGHTGRAY);
-        gc.fillRect(0, 0, 750 + wallThickness, 750 + wallThickness);
-
+        drawCellBackground(offsetX, offsetY, 3, 3);
+        
         for(int row = 0; row < rows; row++) {
             for(int col = 0; col < cols; col++) {
                 Cell cell = grid[row][col];
                 double x = col * cellSize + wallThickness / 2 + offsetX;
                 double y = row * cellSize + wallThickness / 2 + offsetY;
 
-                gc.setStroke(Color.LIMEGREEN);
+                // Dark gray
+                gc.setStroke(Color.rgb(20, 20, 20));
                 gc.setLineWidth(wallThickness);
 
                 if(cell.top) gc.strokeLine(x, y, x + cellSize, y);
@@ -299,6 +305,20 @@ public class MazeGame extends Pane {
                     cell.hasCoin = false;
                     coins++;
                 }
+            }
+        }
+    }
+
+    private void drawCellBackground(double offsetX, double offsetY, int cellsWide, int cellsHigh) {
+        double tileWidth = cellSize * cellsWide;
+        double tileHeight = cellSize * cellsHigh;
+
+        for(int row = 0; row < rows; row += cellsHigh) {
+            for(int col = 0; col < cols; col += cellsWide) {
+                double x = col * cellSize + wallThickness / 2 + offsetX;
+                double y = row * cellSize + wallThickness / 2 + offsetY;
+
+                gc.drawImage(floorTexture, (int)x, (int)y, (int)tileWidth, (int)tileHeight);
             }
         }
     }

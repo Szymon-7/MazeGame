@@ -13,7 +13,7 @@ public class Main extends Application {
         root.getChildren().add(game);
         StackPane.setAlignment(game, Pos.CENTER);
 
-        Scene scene = new Scene(root, 750 + game.wallThickness, 750 + game.wallThickness);
+        Scene scene = new Scene(root, 750 + game.getWallThickness(), 750 + game.getWallThickness());
         scene.setFill(Color.BLACK);
         stage.setScene(scene);
         stage.setTitle("Maze Runner");
