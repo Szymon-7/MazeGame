@@ -21,6 +21,8 @@ public class MazeGame extends Pane {
     private double playerX = 367.5;
     private double playerY = 367.5;
     private int playerSize = 20;
+    private long lastTime = 0;
+    private static final double PLAYER_SPEED = 100;
 
     private int coins = 0;
 
@@ -61,19 +63,32 @@ public class MazeGame extends Pane {
 
     public void startGameLoop() {
         AnimationTimer timer = new AnimationTimer() {
+            @Override
             public void handle(long now) {
-                update();
+                if (lastTime == 0) {
+                    lastTime = now;
+                    return;
+                }
+
+                double deltaSeconds = (now - lastTime) / 1_000_000_000.0;
+                lastTime = now;
+
+                update(deltaSeconds);
                 render();
             }
         };
         timer.start();
     }
 
-    private void update() {
-        if(moveUp && canMove(0, -1, playerSize, cellSize)) playerY -= 1;
-        if(moveDown && canMove(0, 1, playerSize, cellSize)) playerY += 1;
-        if(moveLeft && canMove(-1, 0, playerSize, cellSize)) playerX -= 1;
-        if(moveRight && canMove(1, 0, playerSize, cellSize)) playerX += 1;
+    private void update(double dt) {
+        int pixelsToMove = (int) Math.round(PLAYER_SPEED * dt);
+
+        for (int i = 0; i < pixelsToMove; i++) {
+            if (moveUp    && canMove(0, -1, playerSize, cellSize)) playerY -= 1;
+            if (moveDown  && canMove(0,  1, playerSize, cellSize)) playerY += 1;
+            if (moveLeft  && canMove(-1, 0, playerSize, cellSize)) playerX -= 1;
+            if (moveRight && canMove( 1, 0, playerSize, cellSize)) playerX += 1;
+        }
 
         checkCoinCollisions();
     }
@@ -109,7 +124,7 @@ public class MazeGame extends Pane {
         gc.setFill(Color.RED);
         gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
 
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50);
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 1000);
 
         Text text = new Text("COINS: " + coins);
         text.setFont(gc.getFont());
