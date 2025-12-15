@@ -128,7 +128,7 @@ public class MazeGame extends Pane {
         gc.setFill(Color.RED);
         gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
 
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 1000);
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50);
 
         Text text = new Text("COINS: " + coins);
         text.setFont(gc.getFont());

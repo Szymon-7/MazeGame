@@ -1,28 +1,59 @@
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.Button;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
+    private MazeGame game;
+
     @Override
     public void start(Stage stage) {
-        MazeGame game = new MazeGame();
+
+        game = new MazeGame();
+        game.setVisible(false);
+
         StackPane root = new StackPane();
-        root.getChildren().add(game);
+        root.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
         StackPane.setAlignment(game, Pos.CENTER);
 
-        Scene scene = new Scene(root, 750 + game.getWallThickness(), 750 + game.getWallThickness());
-        scene.setFill(Color.BLACK);
+        // TITLE SCREEN
+        Text title = new Text("MAZE RUNNER");
+        title.setFill(Color.WHITE);
+        title.setStyle("-fx-font-size: 64px; -fx-font-weight: bold;");
+
+        Button playButton = new Button("Play");
+        playButton.setStyle("-fx-font-size: 24px;");
+
+        VBox menu = new VBox(30, title, playButton);
+        menu.setAlignment(Pos.CENTER);
+
+        root.getChildren().addAll(game, menu);
+
+        Scene scene = new Scene(root, 750 + game.getWallThickness(), 750 + game.getWallThickness(), Color.BLACK);
+
         stage.setScene(scene);
         stage.setTitle("Maze Runner");
         stage.setFullScreen(true);
         stage.setFullScreenExitHint("");
         stage.show();
 
-        game.startGameLoop(); // starts AnimationTimer or input handling
+        // START/PLAY
+        playButton.setOnAction(e -> {
+            menu.setVisible(false);
+            menu.setManaged(false);
 
+            game.setVisible(true);
+            game.startGameLoop();
+            game.requestFocus();
+        });
+
+        // INPUT
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case W, UP -> game.setMoveUp(true);
