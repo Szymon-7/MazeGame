@@ -42,6 +42,8 @@ public class MazeGame extends Pane {
 
     public int getWallThickness() { return wallThickness; }
 
+    private Shop shop;
+
     private void centerCanvas() {
         double x = (getWidth() - canvas.getWidth()) / 2;
         double y = (getHeight() - canvas.getHeight()) / 2;
@@ -65,6 +67,7 @@ public class MazeGame extends Pane {
         initGrid();
         generateMazeDFS(grid[0][0]);
         generateCoins(10);
+        placeShop();
     }
 
     public void startGameLoop() {
@@ -95,6 +98,7 @@ public class MazeGame extends Pane {
         if (moveRight && canMove(distance, 0, playerSize, cellSize)) playerX += distance;
 
         checkCoinCollisions();
+        checkShopCollision();
     }
 
     private void render() {
@@ -125,10 +129,17 @@ public class MazeGame extends Pane {
             }
         }
 
+        if (shop != null) {
+            double x = shop.col * cellSize + wallThickness / 2 + offsetX;
+            double y = shop.row * cellSize + wallThickness / 2 + offsetY;
+
+            shop.draw(gc, x, y, cellSize);
+        }
+
         gc.setFill(Color.RED);
         gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
 
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50);
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 5000);
 
         Text text = new Text("COINS: " + coins);
         text.setFont(gc.getFont());
@@ -309,6 +320,18 @@ public class MazeGame extends Pane {
         }
     }
 
+    private void checkShopCollision() {
+        if (shop == null) return;
+
+        int playerRow = (int)((playerY + playerSize / 2) / cellSize);
+        int playerCol = (int)((playerX + playerSize / 2) / cellSize);
+
+        if (playerRow == shop.row && playerCol == shop.col) {
+            System.out.println("Entered shop!");
+            // todo: open UI
+        }
+    }
+
     private void drawCellBackground(double offsetX, double offsetY, int cellsWide, int cellsHigh) {
         double tileWidth = cellSize * cellsWide;
         double tileHeight = cellSize * cellsHigh;
@@ -321,5 +344,17 @@ public class MazeGame extends Pane {
                 gc.drawImage(floorTexture, (int)x, (int)y, (int)tileWidth, (int)tileHeight);
             }
         }
+    }
+
+    private void placeShop() {
+        Random random = new Random();
+        int r, c;
+
+        do {
+            r = random.nextInt(rows);
+            c = random.nextInt(cols);
+        } while (grid[r][c].hasCoin); // avoid coin overlap
+
+        shop = new Shop(r, c);
     }
 }
