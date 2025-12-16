@@ -43,6 +43,15 @@ public class MazeGame extends Pane {
     public int getWallThickness() { return wallThickness; }
 
     private Shop shop;
+    private boolean inShop = false;
+    private boolean canEnterShop = false;
+
+    public void toggleShop() {
+        if (inShop) inShop = false;
+        else if (canEnterShop) inShop = true;
+    }
+
+    public boolean isInShop() { return inShop; }
 
     private void centerCanvas() {
         double x = (getWidth() - canvas.getWidth()) / 2;
@@ -90,6 +99,9 @@ public class MazeGame extends Pane {
     }
 
     private void update(double dt) {
+
+        if (inShop) return;
+
         double distance = PLAYER_SPEED * dt;
 
         if (moveUp && canMove(0, -distance, playerSize, cellSize)) playerY -= distance;
@@ -106,6 +118,12 @@ public class MazeGame extends Pane {
         double offsetY = (canvas.getHeight() / 2) - (playerY + playerSize / 2);
 
         gc.clearRect(0, 0, 750 + wallThickness, 750 + wallThickness);
+
+        drawWorld(offsetX, offsetY);
+        drawUI();
+    }
+
+    private void drawWorld(double offsetX, double offsetY) {
 
         drawCellBackground(offsetX, offsetY, 3, 3);
         
@@ -139,13 +157,37 @@ public class MazeGame extends Pane {
         gc.setFill(Color.RED);
         gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
 
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 5000);
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50);
+    }
 
-        Text text = new Text("COINS: " + coins);
-        text.setFont(gc.getFont());
+    private void drawUI() {
+
         gc.setFill(Color.GOLD);
         gc.setFont(Font.font("Verdana", 20));
-        gc.fillText("COINS: " + coins, (canvas.getWidth() - text.getLayoutBounds().getWidth()) / 2, canvas.getHeight() - 25);
+        gc.fillText("COINS: " + coins, canvas.getWidth() / 2 - 50, canvas.getHeight() - 25);
+
+        if (canEnterShop && !inShop) {
+            gc.setFill(Color.WHITE);
+            gc.setFont(Font.font("Verdana", 16));
+            gc.fillText("Press E to enter", 310, 425);
+        }
+
+        if (inShop) {
+            drawShopUI();
+        }
+    }
+
+    private void drawShopUI() {
+        gc.setFill(Color.rgb(0, 0, 0, 0.85));
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font("Verdana", 28));
+        gc.fillText("SHOP", canvas.getWidth() / 2 - 50, 100);
+
+        gc.setFont(Font.font("Verdana", 18));
+        gc.fillText("Press E or ESC to leave", 255, 140);
+
     }
 
     public boolean canMove(double dx, double dy, int playerSize, int cellSize) {
@@ -321,14 +363,15 @@ public class MazeGame extends Pane {
     }
 
     private void checkShopCollision() {
+        canEnterShop = false;
+
         if (shop == null) return;
 
         int playerRow = (int)((playerY + playerSize / 2) / cellSize);
         int playerCol = (int)((playerX + playerSize / 2) / cellSize);
 
         if (playerRow == shop.row && playerCol == shop.col) {
-            System.out.println("Entered shop!");
-            // todo: open UI
+            canEnterShop = true;
         }
     }
 

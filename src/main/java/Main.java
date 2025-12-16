@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.input.KeyCombination;
 
 public class Main extends Application {
 
@@ -39,6 +40,7 @@ public class Main extends Application {
 
         stage.setScene(scene);
         stage.setTitle("Maze Runner");
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.setFullScreen(true);
         stage.setFullScreenExitHint("");
         stage.show();
@@ -60,6 +62,13 @@ public class Main extends Application {
                 case A, LEFT -> game.setMoveLeft(true);
                 case S, DOWN -> game.setMoveDown(true);
                 case D, RIGHT -> game.setMoveRight(true);
+                case E -> game.toggleShop();
+                case ESCAPE -> {
+                    if (game.isInShop()) {
+                        game.toggleShop();
+                    }
+                } 
+                case F11 -> stage.setFullScreen(!stage.isFullScreen());
             }
         });
 
