@@ -1,19 +1,16 @@
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.scene.image.Image;
-import javafx.animation.AnimationTimer;
+import javafx.scene.canvas.*;
+import javafx.scene.paint.*;
+import javafx.scene.image.*;
+import javafx.scene.text.*;
+import javafx.animation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import javafx.geometry.*;
+
+import javafx.scene.*;
+
+import java.util.*;
 
 public class MazeGame extends Pane {
     private Canvas canvas;
@@ -47,11 +44,21 @@ public class MazeGame extends Pane {
     private boolean canEnterShop = false;
 
     public void toggleShop() {
-        if (inShop) inShop = false;
-        else if (canEnterShop) inShop = true;
+        if (inShop) { 
+            inShop = false;
+            shopOverlay.setVisible(false);
+        }
+        else if (canEnterShop) { 
+            inShop = true;
+            shopOverlay.setVisible(true);
+        }
     }
 
     public boolean isInShop() { return inShop; }
+
+    private StackPane shopOverlay;
+    private int torchLevel = 1;
+    private Button buyTorchButton;
 
     private void centerCanvas() {
         double x = (getWidth() - canvas.getWidth()) / 2;
@@ -67,6 +74,7 @@ public class MazeGame extends Pane {
         floorTexture = new Image(getClass().getResource("/textures/floor.png").toExternalForm());
 
         getChildren().add(canvas);
+        initShopUI();
 
         // Center the canvas within this Pane
         widthProperty().addListener((obs, oldW, newW) -> centerCanvas());
@@ -157,37 +165,57 @@ public class MazeGame extends Pane {
         gc.setFill(Color.RED);
         gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
 
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50);
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 25 + (torchLevel * 25));
     }
 
     private void drawUI() {
+        gc.save();
 
         gc.setFill(Color.GOLD);
         gc.setFont(Font.font("Verdana", 20));
-        gc.fillText("COINS: " + coins, canvas.getWidth() / 2 - 50, canvas.getHeight() - 25);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("COINS: " + coins, canvas.getWidth() / 2, canvas.getHeight() - 25);
 
         if (canEnterShop && !inShop) {
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font("Verdana", 16));
-            gc.fillText("Press E to enter", 310, 425);
+            gc.fillText("Press E to enter", canvas.getWidth() / 2, 425);
         }
 
-        if (inShop) {
-            drawShopUI();
-        }
+        gc.restore();
     }
 
-    private void drawShopUI() {
-        gc.setFill(Color.rgb(0, 0, 0, 0.85));
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    private void initShopUI() {
+        Label title = new Label("SHOP");
+        title.setTextFill(Color.WHITE);
+        title.setFont(Font.font("Verdana", 32));
 
-        gc.setFill(Color.WHITE);
-        gc.setFont(Font.font("Verdana", 28));
-        gc.fillText("SHOP", canvas.getWidth() / 2 - 50, 100);
+        Label exitHint = new Label("Press E or ESC to leave");
+        exitHint.setTextFill(Color.LIGHTGRAY);
+        exitHint.setFont(Font.font("Verdana", 16));
 
-        gc.setFont(Font.font("Verdana", 18));
-        gc.fillText("Press E or ESC to leave", 255, 140);
+        buyTorchButton = new Button("Lantern Upgrade (+Vision) - 1 Coin");
+        buyTorchButton.setFont(Font.font("Verdana", 18));
 
+        buyTorchButton.setOnAction(e -> {
+            if (coins >= 1) {
+                coins--;
+                torchLevel++;
+            }
+        });
+
+        VBox content = new VBox(25, title, exitHint, buyTorchButton);
+        content.setAlignment(Pos.TOP_CENTER);
+        content.setTranslateY(100);
+
+        shopOverlay = new StackPane(content);
+        shopOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.85);");
+        shopOverlay.setVisible(false);
+
+        shopOverlay.prefWidthProperty().bind(widthProperty());
+        shopOverlay.prefHeightProperty().bind(heightProperty());
+
+        getChildren().add(shopOverlay);
     }
 
     public boolean canMove(double dx, double dy, int playerSize, int cellSize) {
