@@ -62,6 +62,8 @@ public class MazeGame extends Pane {
     private Button buyLanternButton;
     private Button buySpeedButton;
 
+    private Exit exit;
+
     private void centerCanvas() {
         double x = (getWidth() - canvas.getWidth()) / 2;
         double y = (getHeight() - canvas.getHeight()) / 2;
@@ -87,6 +89,7 @@ public class MazeGame extends Pane {
         generateMazeDFS(grid[0][0]);
         generateCoins(10);
         placeShop();
+        placeExit();
     }
 
     public void startGameLoop() {
@@ -162,6 +165,13 @@ public class MazeGame extends Pane {
             double y = shop.row * cellSize + wallThickness / 2 + offsetY;
 
             shop.draw(gc, x, y, cellSize);
+        }
+
+        if (exit != null) {
+            double x = exit.col * cellSize + wallThickness / 2 + offsetX;
+            double y = exit.row * cellSize + wallThickness / 2 + offsetY;
+
+            exit.draw(gc, x, y, cellSize);
         }
 
         gc.setFill(Color.RED);
@@ -439,5 +449,19 @@ public class MazeGame extends Pane {
         } while (grid[r][c].hasCoin); // avoid coin overlap
 
         shop = new Shop(r, c);
+        grid[r][c].hasShop = true;
+    }
+
+    private void placeExit() {
+        Random random = new Random();
+        int r, c;
+
+        do {
+            r = random.nextInt(rows);
+            c = random.nextInt(cols);
+        } while (grid[r][c].hasCoin || grid[r][c].hasShop);
+
+        exit = new Exit(r, c);
+        grid[r][c].hasExit = true;
     }
 }
