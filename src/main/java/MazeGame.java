@@ -20,7 +20,8 @@ public class MazeGame extends Pane {
     private double playerY = 367.5;
     private int playerSize = 20;
     private long lastTime = 0;
-    private static final double PLAYER_SPEED = 100;
+    private double PLAYER_SPEED = 75;
+    private int speedLevel = 1;
 
     private int coins = 0;
 
@@ -57,8 +58,9 @@ public class MazeGame extends Pane {
     public boolean isInShop() { return inShop; }
 
     private StackPane shopOverlay;
-    private int torchLevel = 1;
-    private Button buyTorchButton;
+    private int lanternLevel = 1;
+    private Button buyLanternButton;
+    private Button buySpeedButton;
 
     private void centerCanvas() {
         double x = (getWidth() - canvas.getWidth()) / 2;
@@ -110,7 +112,7 @@ public class MazeGame extends Pane {
 
         if (inShop) return;
 
-        double distance = PLAYER_SPEED * dt;
+        double distance = (PLAYER_SPEED + speedLevel * 25) * dt;
 
         if (moveUp && canMove(0, -distance, playerSize, cellSize)) playerY -= distance;
         if (moveDown && canMove(0, distance, playerSize, cellSize)) playerY += distance;
@@ -165,7 +167,7 @@ public class MazeGame extends Pane {
         gc.setFill(Color.RED);
         gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
 
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 25 + (torchLevel * 25));
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 25 + (lanternLevel * 25));
     }
 
     private void drawUI() {
@@ -194,17 +196,27 @@ public class MazeGame extends Pane {
         exitHint.setTextFill(Color.LIGHTGRAY);
         exitHint.setFont(Font.font("Verdana", 16));
 
-        buyTorchButton = new Button("Lantern Upgrade (+Vision) - 1 Coin");
-        buyTorchButton.setFont(Font.font("Verdana", 18));
+        buyLanternButton = new Button("Lantern Upgrade (+Vision) - 1 Coin");
+        buyLanternButton.setFont(Font.font("Verdana", 18));
 
-        buyTorchButton.setOnAction(e -> {
+        buyLanternButton.setOnAction(e -> {
             if (coins >= 1) {
                 coins--;
-                torchLevel++;
+                lanternLevel++;
             }
         });
 
-        VBox content = new VBox(25, title, exitHint, buyTorchButton);
+        buySpeedButton = new Button("Shoes Upgrade (+Speed) - 1 Coin");
+        buySpeedButton.setFont(Font.font("Verdana", 18));
+
+        buySpeedButton.setOnAction(e -> {
+            if (coins >= 1) {
+                coins--;
+                speedLevel++;
+            }
+        });
+
+        VBox content = new VBox(25, title, exitHint, buyLanternButton, buySpeedButton);
         content.setAlignment(Pos.TOP_CENTER);
         content.setTranslateY(100);
 
