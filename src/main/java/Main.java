@@ -62,7 +62,7 @@ public class Main extends Application {
                 case A, LEFT -> game.setMoveLeft(true);
                 case S, DOWN -> game.setMoveDown(true);
                 case D, RIGHT -> game.setMoveRight(true);
-                case E -> game.toggleShop();
+                case E -> game.interact();
                 case ESCAPE -> {
                     if (game.isInShop()) {
                         game.toggleShop();

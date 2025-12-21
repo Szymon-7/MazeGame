@@ -44,6 +44,15 @@ public class MazeGame extends Pane {
     private boolean inShop = false;
     private boolean canEnterShop = false;
 
+    public void interact() {
+        if (canExit) {
+            resetMaze();
+            return;
+        }
+
+        if (canEnterShop) toggleShop();
+    }
+
     public void toggleShop() {
         if (inShop) { 
             inShop = false;
@@ -63,6 +72,7 @@ public class MazeGame extends Pane {
     private Button buySpeedButton;
 
     private Exit exit;
+    private boolean canExit = false;
 
     private void centerCanvas() {
         double x = (getWidth() - canvas.getWidth()) / 2;
@@ -85,11 +95,7 @@ public class MazeGame extends Pane {
         heightProperty().addListener((obs, oldH, newH) -> centerCanvas());
         centerCanvas();
 
-        initGrid();
-        generateMazeDFS(grid[0][0]);
-        generateCoins(10);
-        placeShop();
-        placeExit();
+        resetMaze(); 
     }
 
     public void startGameLoop() {
@@ -124,6 +130,7 @@ public class MazeGame extends Pane {
 
         checkCoinCollisions();
         checkShopCollision();
+        checkExitCollision();
     }
 
     private void render() {
@@ -192,6 +199,12 @@ public class MazeGame extends Pane {
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font("Verdana", 16));
             gc.fillText("Press E to enter", canvas.getWidth() / 2, 425);
+        }
+
+        if (canExit) {
+            gc.setFill(Color.WHITE);
+            gc.setFont(Font.font("Verdana", 16));
+            gc.fillText("Press E to exit maze", canvas.getWidth() / 2, 425);
         }
 
         gc.restore();
@@ -425,6 +438,19 @@ public class MazeGame extends Pane {
         }
     }
 
+    private void checkExitCollision() {
+        canExit = false;
+
+        if (exit == null) return;
+
+        int playerRow = (int)((playerY + playerSize / 2) / cellSize);
+        int playerCol = (int)((playerX + playerSize / 2) / cellSize);
+
+        if (playerRow == exit.row && playerCol == exit.col) {
+            canExit = true;
+        }
+    }
+
     private void drawCellBackground(double offsetX, double offsetY, int cellsWide, int cellsHigh) {
         double tileWidth = cellSize * cellsWide;
         double tileHeight = cellSize * cellsHigh;
@@ -463,5 +489,27 @@ public class MazeGame extends Pane {
 
         exit = new Exit(r, c);
         grid[r][c].hasExit = true;
+    }
+
+    public void resetMaze() {
+        playerX = 367.5;
+        playerY = 367.5;
+
+        moveUp = moveDown = moveLeft = moveRight = false;
+
+        initGrid();
+        generateMazeDFS(grid[0][0]);
+
+        generateCoins(10);
+        placeShop();
+        placeExit();
+
+        inShop = false;
+        canEnterShop = false;
+        canExit = false;
+
+        shopOverlay.setVisible(false);
+
+        lastTime = 0;
     }
 }
