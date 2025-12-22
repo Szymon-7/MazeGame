@@ -16,8 +16,8 @@ public class MazeGame extends Pane {
     private Canvas canvas;
     private GraphicsContext gc;
 
-    private double playerX = 367.5;
-    private double playerY = 367.5;
+    private double playerX;
+    private double playerY;
     private int playerSize = 20;
     private long lastTime = 0;
     private double PLAYER_SPEED = 75;
@@ -31,9 +31,10 @@ public class MazeGame extends Pane {
     public void setMoveLeft(boolean value) { moveLeft = value; }
     public void setMoveRight(boolean value) { moveRight = value; }
 
-    private int rows = 15;
-    private int cols = 15;
-    Cell[][] grid = new Cell[rows][cols];
+    private int rows = 3;
+    private int cols = 3;
+    private int mazeLevel = -1;
+    Cell[][] grid;
     private int cellSize = 50;
     private int wallThickness = 5;
     private Image floorTexture;
@@ -73,6 +74,8 @@ public class MazeGame extends Pane {
 
     private Exit exit;
     private boolean canExit = false;
+
+    private Random random = new Random();
 
     private void centerCanvas() {
         double x = (getWidth() - canvas.getWidth()) / 2;
@@ -378,14 +381,13 @@ public class MazeGame extends Pane {
     }
 
     private void generateCoins(int maxCoins) {
-        Random random = new Random();
         int numOfCoins = random.nextInt(maxCoins + 1);    // Random num between 0 and max (coins)
         int row, col;
 
         for(int i = 0; i < numOfCoins; i++) {
             do {
-                row = random.nextInt(15);   // Random num between 0 and 14 (rows & cols)
-                col = random.nextInt(15); 
+                row = random.nextInt(rows);   // Random num between 0 and 14 (rows & cols)
+                col = random.nextInt(cols); 
             } while (grid[row][col].hasCoin == true);   // No repeats/overlap
 
             grid[row][col].hasCoin = true;
@@ -466,7 +468,6 @@ public class MazeGame extends Pane {
     }
 
     private void placeShop() {
-        Random random = new Random();
         int r, c;
 
         do {
@@ -479,7 +480,6 @@ public class MazeGame extends Pane {
     }
 
     private void placeExit() {
-        Random random = new Random();
         int r, c;
 
         do {
@@ -492,15 +492,21 @@ public class MazeGame extends Pane {
     }
 
     public void resetMaze() {
-        playerX = 367.5;
-        playerY = 367.5;
+        mazeLevel++;
+        rows = 3 + mazeLevel * 6;
+        cols = 3 + mazeLevel * 6;
+        
+        playerX = (cols * cellSize + wallThickness) / 2 - playerSize / 2;
+        playerY = (rows * cellSize + wallThickness) / 2 - playerSize / 2;
+
+        grid = new Cell[rows][cols];
 
         moveUp = moveDown = moveLeft = moveRight = false;
 
         initGrid();
         generateMazeDFS(grid[0][0]);
 
-        generateCoins(10);
+        generateCoins((rows * cols) / 6);
         placeShop();
         placeExit();
 
