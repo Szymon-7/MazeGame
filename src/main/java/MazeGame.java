@@ -45,6 +45,9 @@ public class MazeGame extends Pane {
     private boolean inShop = false;
     private boolean canEnterShop = false;
 
+    private boolean paused = false;
+    private StackPane pauseOverlay;
+
     public void interact() {
         if (canExit) {
             resetMaze();
@@ -63,6 +66,15 @@ public class MazeGame extends Pane {
             inShop = true;
             shopOverlay.setVisible(true);
         }
+    }
+
+    public void togglePause() {
+        if (inShop) return;
+    
+        paused = !paused;
+        pauseOverlay.setVisible(paused);
+    
+        moveUp = moveDown = moveLeft = moveRight = false;
     }
 
     public boolean isInShop() { return inShop; }
@@ -92,6 +104,7 @@ public class MazeGame extends Pane {
 
         getChildren().add(canvas);
         initShopUI();
+        initPauseUI();
 
         // Center the canvas within this Pane
         widthProperty().addListener((obs, oldW, newW) -> centerCanvas());
@@ -122,7 +135,7 @@ public class MazeGame extends Pane {
 
     private void update(double dt) {
 
-        if (inShop) return;
+        if (inShop || paused) return;
 
         double distance = (PLAYER_SPEED + speedLevel * 25) * dt;
 
@@ -254,6 +267,32 @@ public class MazeGame extends Pane {
         shopOverlay.prefHeightProperty().bind(heightProperty());
 
         getChildren().add(shopOverlay);
+    }
+
+    private void initPauseUI() {
+        Label title = new Label("PAUSED");
+        title.setTextFill(Color.WHITE);
+        title.setFont(Font.font("Verdana", 36));
+    
+        Button resumeButton = new Button("Resume");
+        resumeButton.setFont(Font.font("Verdana", 18));
+        resumeButton.setOnAction(e -> togglePause());
+    
+        Button exitButton = new Button("Exit Game");
+        exitButton.setFont(Font.font("Verdana", 18));
+        exitButton.setOnAction(e -> { javafx.application.Platform.exit(); });
+    
+        VBox content = new VBox(30, title, resumeButton, exitButton);
+        content.setAlignment(Pos.CENTER);
+    
+        pauseOverlay = new StackPane(content);
+        pauseOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.85);");
+        pauseOverlay.setVisible(false);
+    
+        pauseOverlay.prefWidthProperty().bind(widthProperty());
+        pauseOverlay.prefHeightProperty().bind(heightProperty());
+    
+        getChildren().add(pauseOverlay);
     }
 
     public boolean canMove(double dx, double dy, int playerSize, int cellSize) {

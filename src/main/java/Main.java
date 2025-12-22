@@ -67,6 +67,7 @@ public class Main extends Application {
                     if (game.isInShop()) {
                         game.toggleShop();
                     }
+                    else { game.togglePause(); }
                 } 
                 case F11 -> stage.setFullScreen(!stage.isFullScreen());
             }
