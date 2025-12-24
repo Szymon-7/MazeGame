@@ -16,7 +16,7 @@ public class MazeGame extends Pane {
 
     private double playerX;
     private double playerY;
-    private int playerSize = 20;
+    private int playerSize = 32;
     private long lastTime = 0;
     private double PLAYER_SPEED = 75;
     private int speedLevel = 1;
@@ -35,6 +35,7 @@ public class MazeGame extends Pane {
     private Image playerRight;
 
     private Image currentPlayerSprite;
+    private int currentFrame = 0;
 
     private int rows = 3;
     private int cols = 3;
@@ -152,18 +153,22 @@ public class MazeGame extends Pane {
         if (moveUp && canMove(0, -distance, playerSize, cellSize)) {
             playerY -= distance;
             currentPlayerSprite = playerUp;
+            currentFrame = (currentFrame + 1) % 4;
         }
         if (moveDown && canMove(0, distance, playerSize, cellSize)) {
             playerY += distance;
             currentPlayerSprite = playerDown;
+            currentFrame = (currentFrame + 1) % 4;
         }
         if (moveLeft && canMove(-distance, 0, playerSize, cellSize)) {
             playerX -= distance;
             currentPlayerSprite = playerLeft;
+            currentFrame = (currentFrame + 1) % 4;
         }
         if (moveRight && canMove(distance, 0, playerSize, cellSize)) {
             playerX += distance;
             currentPlayerSprite = playerRight;
+            currentFrame = (currentFrame + 1) % 4;
         };
 
         checkCoinCollisions();
@@ -221,8 +226,8 @@ public class MazeGame extends Pane {
 
         gc.drawImage(
             currentPlayerSprite, // full spritesheet Image
-            5, 4,                // top-left corner of the frame in the sheet
-            14, 16,              // size of the frame in the sheet
+            currentFrame * 20, 0,                // top-left corner of the frame in the sheet
+            20, 20,              // size of the frame in the sheet
             playerX + offsetX,   // where to draw on canvas
             playerY + offsetY,
             playerSize,          // scale to playerSize width
