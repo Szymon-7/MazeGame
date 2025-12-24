@@ -8,8 +8,6 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.geometry.*;
 
-import javafx.scene.*;
-
 import java.util.*;
 
 public class MazeGame extends Pane {
@@ -30,6 +28,13 @@ public class MazeGame extends Pane {
     public void setMoveDown(boolean value) { moveDown = value; }
     public void setMoveLeft(boolean value) { moveLeft = value; }
     public void setMoveRight(boolean value) { moveRight = value; }
+
+    private Image playerUp;
+    private Image playerDown;
+    private Image playerLeft;
+    private Image playerRight;
+
+    private Image currentPlayerSprite;
 
     private int rows = 3;
     private int cols = 3;
@@ -102,6 +107,11 @@ public class MazeGame extends Pane {
 
         floorTexture = new Image(getClass().getResource("/textures/floor.png").toExternalForm());
 
+        playerUp = new Image(getClass().getResource("/sprites/moveUp.png").toExternalForm());
+        playerDown = new Image(getClass().getResource("/sprites/moveDown.png").toExternalForm());
+        playerLeft = new Image(getClass().getResource("/sprites/moveLeft.png").toExternalForm());
+        playerRight = new Image(getClass().getResource("/sprites/moveRight.png").toExternalForm());
+
         getChildren().add(canvas);
         initShopUI();
         initPauseUI();
@@ -139,10 +149,22 @@ public class MazeGame extends Pane {
 
         double distance = (PLAYER_SPEED + speedLevel * 25) * dt;
 
-        if (moveUp && canMove(0, -distance, playerSize, cellSize)) playerY -= distance;
-        if (moveDown && canMove(0, distance, playerSize, cellSize)) playerY += distance;
-        if (moveLeft && canMove(-distance, 0, playerSize, cellSize)) playerX -= distance;
-        if (moveRight && canMove(distance, 0, playerSize, cellSize)) playerX += distance;
+        if (moveUp && canMove(0, -distance, playerSize, cellSize)) {
+            playerY -= distance;
+            currentPlayerSprite = playerUp;
+        }
+        if (moveDown && canMove(0, distance, playerSize, cellSize)) {
+            playerY += distance;
+            currentPlayerSprite = playerDown;
+        }
+        if (moveLeft && canMove(-distance, 0, playerSize, cellSize)) {
+            playerX -= distance;
+            currentPlayerSprite = playerLeft;
+        }
+        if (moveRight && canMove(distance, 0, playerSize, cellSize)) {
+            playerX += distance;
+            currentPlayerSprite = playerRight;
+        };
 
         checkCoinCollisions();
         checkShopCollision();
@@ -197,8 +219,15 @@ public class MazeGame extends Pane {
             exit.draw(gc, x, y, cellSize);
         }
 
-        gc.setFill(Color.RED);
-        gc.fillRect(playerX + offsetX, playerY + offsetY, playerSize, playerSize);
+        gc.drawImage(
+            currentPlayerSprite, // full spritesheet Image
+            5, 4,                // top-left corner of the frame in the sheet
+            14, 16,              // size of the frame in the sheet
+            playerX + offsetX,   // where to draw on canvas
+            playerY + offsetY,
+            playerSize,          // scale to playerSize width
+            playerSize           // scale to playerSize height
+        );
 
         drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 25 + (lanternLevel * 25));
     }
@@ -554,6 +583,8 @@ public class MazeGame extends Pane {
         canExit = false;
 
         shopOverlay.setVisible(false);
+
+        currentPlayerSprite = playerDown;
 
         lastTime = 0;
     }
