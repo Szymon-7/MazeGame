@@ -6,7 +6,7 @@ This project uses ***Maven*** to manage dependencies and build the project.
 ---
 
 ## Requirements
-- **Java 17 or later**  
+- **Java 23 or later (Java 25 recommended)**  
 Verify with:
 `java -version`
 

@@ -16,7 +16,7 @@ public class MazeGame extends Pane {
 
     private double playerX;
     private double playerY;
-    private int playerSize = 32;
+    private int playerSize = 30;
     private long lastTime = 0;
     private double PLAYER_SPEED = 75;
     private int speedLevel = 1;
@@ -36,6 +36,8 @@ public class MazeGame extends Pane {
 
     private Image currentPlayerSprite;
     private int currentFrame = 0;
+    private double frameTime = 0;
+    private final double FRAME_DURATION = 0.2;
 
     private int rows = 3;
     private int cols = 3;
@@ -150,26 +152,40 @@ public class MazeGame extends Pane {
 
         double distance = (PLAYER_SPEED + speedLevel * 25) * dt;
 
+        boolean isMoving = false;
+
         if (moveUp && canMove(0, -distance, playerSize, cellSize)) {
             playerY -= distance;
             currentPlayerSprite = playerUp;
-            currentFrame = (currentFrame + 1) % 4;
+            isMoving = true;
         }
         if (moveDown && canMove(0, distance, playerSize, cellSize)) {
             playerY += distance;
             currentPlayerSprite = playerDown;
-            currentFrame = (currentFrame + 1) % 4;
+            isMoving = true;
         }
         if (moveLeft && canMove(-distance, 0, playerSize, cellSize)) {
             playerX -= distance;
             currentPlayerSprite = playerLeft;
-            currentFrame = (currentFrame + 1) % 4;
+            isMoving = true;
         }
         if (moveRight && canMove(distance, 0, playerSize, cellSize)) {
             playerX += distance;
             currentPlayerSprite = playerRight;
-            currentFrame = (currentFrame + 1) % 4;
+            isMoving = true;
         };
+
+        if (isMoving) {
+            frameTime += dt;
+            if (frameTime >= FRAME_DURATION) {
+                currentFrame = (currentFrame + 1) % 4; // sprite frames 0-3
+                frameTime = 0;
+            }
+        }
+        else {
+            currentFrame = 0; // idle
+            frameTime = 0;
+        }
 
         checkCoinCollisions();
         checkShopCollision();
