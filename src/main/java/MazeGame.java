@@ -14,30 +14,15 @@ public class MazeGame extends Pane {
     private Canvas canvas;
     private GraphicsContext gc;
 
-    private double playerX;
-    private double playerY;
-    private int playerSize = 30;
-    private long lastTime = 0;
-    private double PLAYER_SPEED = 75;
-    private int speedLevel = 1;
+    private Player player;
 
-    private int coins = 0;
+    private long lastTime = 0;
 
     private boolean moveUp, moveDown, moveLeft, moveRight;
     public void setMoveUp(boolean value) { moveUp = value; }
     public void setMoveDown(boolean value) { moveDown = value; }
     public void setMoveLeft(boolean value) { moveLeft = value; }
     public void setMoveRight(boolean value) { moveRight = value; }
-
-    private Image playerUp;
-    private Image playerDown;
-    private Image playerLeft;
-    private Image playerRight;
-
-    private Image currentPlayerSprite;
-    private int currentFrame = 0;
-    private double frameTime = 0;
-    private final double FRAME_DURATION = 0.2;
 
     private int rows = 3;
     private int cols = 3;
@@ -88,7 +73,6 @@ public class MazeGame extends Pane {
     public boolean isInShop() { return inShop; }
 
     private StackPane shopOverlay;
-    private int lanternLevel = 1;
     private Button buyLanternButton;
     private Button buySpeedButton;
 
@@ -110,10 +94,10 @@ public class MazeGame extends Pane {
 
         floorTexture = new Image(getClass().getResource("/textures/floor.png").toExternalForm());
 
-        playerUp = new Image(getClass().getResource("/sprites/moveUp.png").toExternalForm());
-        playerDown = new Image(getClass().getResource("/sprites/moveDown.png").toExternalForm());
-        playerLeft = new Image(getClass().getResource("/sprites/moveLeft.png").toExternalForm());
-        playerRight = new Image(getClass().getResource("/sprites/moveRight.png").toExternalForm());
+        player = new Player(
+            cols * cellSize + wallThickness / 2 - player.getSize() / 2,
+            rows * cellSize + wallThickness / 2 - player.getSize() / 2
+        );
 
         getChildren().add(canvas);
         initShopUI();
@@ -150,42 +134,27 @@ public class MazeGame extends Pane {
 
         if (inShop || paused) return;
 
-        double distance = (PLAYER_SPEED + speedLevel * 25) * dt;
-
+        double distance = (player.getSpeed() + player.getSpeedLevel() * 25) * dt;
         boolean isMoving = false;
 
-        if (moveUp && canMove(0, -distance, playerSize, cellSize)) {
-            playerY -= distance;
-            currentPlayerSprite = playerUp;
+        if (moveUp && canMove(0, -distance, player.getSize(), cellSize)) {
+            player.moveUp(distance);
             isMoving = true;
         }
-        if (moveDown && canMove(0, distance, playerSize, cellSize)) {
-            playerY += distance;
-            currentPlayerSprite = playerDown;
+        if (moveDown && canMove(0, distance, player.getSize(), cellSize)) {
+            player.moveDown(distance);
             isMoving = true;
         }
-        if (moveLeft && canMove(-distance, 0, playerSize, cellSize)) {
-            playerX -= distance;
-            currentPlayerSprite = playerLeft;
+        if (moveLeft && canMove(-distance, 0, player.getSize(), cellSize)) {
+            player.moveLeft(distance);
             isMoving = true;
         }
-        if (moveRight && canMove(distance, 0, playerSize, cellSize)) {
-            playerX += distance;
-            currentPlayerSprite = playerRight;
+        if (moveRight && canMove(distance, 0, player.getSize(), cellSize)) {
+            player.moveRight(distance);
             isMoving = true;
-        };
+        }
 
-        if (isMoving) {
-            frameTime += dt;
-            if (frameTime >= FRAME_DURATION) {
-                currentFrame = (currentFrame + 1) % 4; // sprite frames 0-3
-                frameTime = 0;
-            }
-        }
-        else {
-            currentFrame = 0; // idle
-            frameTime = 0;
-        }
+        player.updateAnimation(dt, isMoving);
 
         checkCoinCollisions();
         checkShopCollision();
@@ -193,12 +162,13 @@ public class MazeGame extends Pane {
     }
 
     private void render() {
-        double offsetX = (canvas.getWidth() / 2) - (playerX + playerSize / 2);
-        double offsetY = (canvas.getHeight() / 2) - (playerY + playerSize / 2);
+        double offsetX = (canvas.getWidth() / 2) - (player.getX() + player.getSize() / 2);
+        double offsetY = (canvas.getHeight() / 2) - (player.getY() + player.getSize() / 2);
 
         gc.clearRect(0, 0, 750 + wallThickness, 750 + wallThickness);
 
         drawWorld(offsetX, offsetY);
+        player.render(gc, offsetX, offsetY);
         drawUI();
     }
 
@@ -240,17 +210,7 @@ public class MazeGame extends Pane {
             exit.draw(gc, x, y, cellSize);
         }
 
-        gc.drawImage(
-            currentPlayerSprite, // full spritesheet Image
-            currentFrame * 20, 0,                // top-left corner of the frame in the sheet
-            20, 20,              // size of the frame in the sheet
-            playerX + offsetX,   // where to draw on canvas
-            playerY + offsetY,
-            playerSize,          // scale to playerSize width
-            playerSize           // scale to playerSize height
-        );
-
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 25 + (lanternLevel * 25));
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 25 + (player.getLanternLevel() * 25));
     }
 
     private void drawUI() {
@@ -259,7 +219,7 @@ public class MazeGame extends Pane {
         gc.setFill(Color.GOLD);
         gc.setFont(Font.font("Verdana", 20));
         gc.setTextAlign(TextAlignment.CENTER);
-        gc.fillText("COINS: " + coins, canvas.getWidth() / 2, canvas.getHeight() - 25);
+        gc.fillText("COINS: " + player.getCoins(), canvas.getWidth() / 2, canvas.getHeight() - 25);
 
         if (canEnterShop && !inShop) {
             gc.setFill(Color.WHITE);
@@ -289,9 +249,9 @@ public class MazeGame extends Pane {
         buyLanternButton.setFont(Font.font("Verdana", 18));
 
         buyLanternButton.setOnAction(e -> {
-            if (coins >= 1) {
-                coins--;
-                lanternLevel++;
+            if (player.getCoins() >= 1) {
+                player.addCoins(-1);
+                player.upgradeLantern();
             }
         });
 
@@ -299,9 +259,9 @@ public class MazeGame extends Pane {
         buySpeedButton.setFont(Font.font("Verdana", 18));
 
         buySpeedButton.setOnAction(e -> {
-            if (coins >= 1) {
-                coins--;
-                speedLevel++;
+            if (player.getCoins() >= 1) {
+                player.addCoins(-1);
+                player.upgradeSpeed();
             }
         });
 
@@ -346,8 +306,8 @@ public class MazeGame extends Pane {
     }
 
     public boolean canMove(double dx, double dy, int playerSize, int cellSize) {
-        double nextX = playerX + dx;
-        double nextY = playerY + dy;
+        double nextX = player.getX() + dx;
+        double nextY = player.getY() + dy;
 
         double left = nextX;
         double right = nextX + playerSize;
@@ -484,10 +444,10 @@ public class MazeGame extends Pane {
     }
 
     private void checkCoinCollisions() {
-        double playerLeft = playerX;
-        double playerRight = playerX + playerSize;
-        double playerTop = playerY;
-        double playerBottom = playerY + playerSize;
+        double playerLeft = player.getX();
+        double playerRight = player.getX() + player.getSize();
+        double playerTop = player.getY();
+        double playerBottom = player.getY() + player.getSize();
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -510,7 +470,7 @@ public class MazeGame extends Pane {
                 // Coin pickup with efficient formula
                 if (dx * dx + dy * dy < coinRadius * coinRadius) {
                     cell.hasCoin = false;
-                    coins++;
+                    player.addCoins(1);
                 }
             }
         }
@@ -521,8 +481,8 @@ public class MazeGame extends Pane {
 
         if (shop == null) return;
 
-        int playerRow = (int)((playerY + playerSize / 2) / cellSize);
-        int playerCol = (int)((playerX + playerSize / 2) / cellSize);
+        int playerRow = (int)((player.getY() + player.getSize() / 2) / cellSize);
+        int playerCol = (int)((player.getX() + player.getSize() / 2) / cellSize);
 
         if (playerRow == shop.row && playerCol == shop.col) {
             canEnterShop = true;
@@ -534,8 +494,8 @@ public class MazeGame extends Pane {
 
         if (exit == null) return;
 
-        int playerRow = (int)((playerY + playerSize / 2) / cellSize);
-        int playerCol = (int)((playerX + playerSize / 2) / cellSize);
+        int playerRow = (int)((player.getY() + player.getSize() / 2) / cellSize);
+        int playerCol = (int)((player.getX() + player.getSize() / 2) / cellSize);
 
         if (playerRow == exit.row && playerCol == exit.col) {
             canExit = true;
@@ -584,9 +544,9 @@ public class MazeGame extends Pane {
         mazeLevel++;
         rows = 3 + mazeLevel * 6;
         cols = 3 + mazeLevel * 6;
-        
-        playerX = (cols * cellSize + wallThickness) / 2 - playerSize / 2;
-        playerY = (rows * cellSize + wallThickness) / 2 - playerSize / 2;
+
+        player.setX((cols * cellSize + wallThickness) / 2 - player.getSize() / 2);
+        player.setY((rows * cellSize + wallThickness) / 2 - player.getSize() / 2);
 
         grid = new Cell[rows][cols];
 
@@ -605,7 +565,7 @@ public class MazeGame extends Pane {
 
         shopOverlay.setVisible(false);
 
-        currentPlayerSprite = playerDown;
+        player.moveDown(0); // Set sprite to down on reset
 
         lastTime = 0;
     }

@@ -70,6 +70,7 @@ public class Main extends Application {
                     else { game.togglePause(); }
                 } 
                 case F11 -> stage.setFullScreen(!stage.isFullScreen());
+                default -> {}
             }
         });
 
@@ -79,6 +80,7 @@ public class Main extends Application {
                 case A, LEFT -> game.setMoveLeft(false);
                 case S, DOWN -> game.setMoveDown(false);
                 case D, RIGHT -> game.setMoveRight(false);
+                default -> {}
             }
         });
     }
