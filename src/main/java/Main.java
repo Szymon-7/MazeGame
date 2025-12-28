@@ -36,7 +36,7 @@ public class Main extends Application {
 
         root.getChildren().addAll(game, menu);
 
-        Scene scene = new Scene(root, 750 + game.getWallThickness(), 750 + game.getWallThickness(), Color.BLACK);
+        Scene scene = new Scene(root, 750 + game.getMaze().getWallThickness(), 750 + game.getMaze().getWallThickness(), Color.BLACK);
 
         stage.setScene(scene);
         stage.setTitle("Maze Runner");
@@ -64,7 +64,7 @@ public class Main extends Application {
                 case D, RIGHT -> game.setMoveRight(true);
                 case E -> game.interact();
                 case ESCAPE -> {
-                    if (game.isInShop()) {
+                    if (game.inShop()) {
                         game.toggleShop();
                     }
                     else { game.togglePause(); }

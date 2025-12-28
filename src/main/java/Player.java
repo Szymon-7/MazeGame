@@ -23,10 +23,7 @@ public class Player {
     private final double FRAME_DURATION = 0.2;
     private final int FRAME_COUNT = 4;
 
-    public Player(double x, double y) {
-        this.x = x;
-        this.y = y;
-
+    public Player() {
         this.upSprite = loadImage("/sprites/moveUp.png");
         this.downSprite = loadImage("/sprites/moveDown.png");
         this.leftSprite = loadImage("/sprites/moveLeft.png");
