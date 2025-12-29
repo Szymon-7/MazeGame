@@ -2,10 +2,12 @@ public class CollisionSystem {
 
     private final Maze maze;
     private final Player player;
+    private final AudioManager audio;
 
-    public CollisionSystem(Maze maze, Player player) {
+    public CollisionSystem(Maze maze, Player player, AudioManager audio) {
         this.maze = maze;
         this.player = player;
+        this.audio = audio;
     }
 
     public boolean canMove(double dx, double dy) {
@@ -103,6 +105,7 @@ public class CollisionSystem {
                 if (dx * dx + dy * dy < coinRadius * coinRadius) {
                     cell.hasCoin = false;
                     player.addCoins(1);
+                    audio.playCoinPickup();
                 }
             }
         }

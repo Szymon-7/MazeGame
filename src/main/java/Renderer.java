@@ -85,6 +85,35 @@ public class Renderer {
         drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 25 + (player.getLanternLevel() * 25));
     }
 
+    private void drawCellBackground(double offsetX, double offsetY, int cellsWide, int cellsHigh) {
+        double tileWidth = maze.getCellSize() * cellsWide;
+        double tileHeight = maze.getCellSize() * cellsHigh;
+
+        for(int row = 0; row < maze.getRows(); row += cellsHigh) {
+            for(int col = 0; col < maze.getCols(); col += cellsWide) {
+                double x = col * maze.getCellSize() + maze.getWallThickness() / 2 + offsetX;
+                double y = row * maze.getCellSize() + maze.getWallThickness() / 2 + offsetY;
+
+                gc.drawImage(floorTexture, (int)x, (int)y, (int)tileWidth, (int)tileHeight);
+            }
+        }
+    }
+
+    private void drawFog(GraphicsContext gc, double centerX, double centerY, double radius) {
+        RadialGradient gradient = new RadialGradient(
+            0, 0,              // focusAngle, focusDistance
+            centerX, centerY,  // center X, Y
+            radius,            // radius
+            false,             // proportional (false because we use pixels)
+            CycleMethod.NO_CYCLE,
+            new Stop(0, Color.rgb(0, 0, 0, 0)), // fully transparent in center
+            new Stop(1, Color.rgb(0, 0, 0, 1))  // mostly opaque at edges
+        );
+
+        gc.setFill(gradient);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
     private void drawUI() {
         gc.save();
 
@@ -106,34 +135,5 @@ public class Renderer {
         }
 
         gc.restore();
-    }
-
-    private void drawFog(GraphicsContext gc, double centerX, double centerY, double radius) {
-        RadialGradient gradient = new RadialGradient(
-            0, 0,              // focusAngle, focusDistance
-            centerX, centerY,  // center X, Y
-            radius,            // radius
-            false,             // proportional (false because we use pixels)
-            CycleMethod.NO_CYCLE,
-            new Stop(0, Color.rgb(0, 0, 0, 0)), // fully transparent in center
-            new Stop(1, Color.rgb(0, 0, 0, 1))  // mostly opaque at edges
-        );
-
-        gc.setFill(gradient);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-    }
-
-    private void drawCellBackground(double offsetX, double offsetY, int cellsWide, int cellsHigh) {
-        double tileWidth = maze.getCellSize() * cellsWide;
-        double tileHeight = maze.getCellSize() * cellsHigh;
-
-        for(int row = 0; row < maze.getRows(); row += cellsHigh) {
-            for(int col = 0; col < maze.getCols(); col += cellsWide) {
-                double x = col * maze.getCellSize() + maze.getWallThickness() / 2 + offsetX;
-                double y = row * maze.getCellSize() + maze.getWallThickness() / 2 + offsetY;
-
-                gc.drawImage(floorTexture, (int)x, (int)y, (int)tileWidth, (int)tileHeight);
-            }
-        }
     }
 }

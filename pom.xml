@@ -25,6 +25,11 @@
             <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -53,6 +58,7 @@
                     <mainClass>Main</mainClass>
                     <options>
                         <option>--enable-native-access=javafx.graphics</option>
+                        <option>--enable-native-access=javafx.media</option>
                     </options>
                 </configuration>
             </plugin>

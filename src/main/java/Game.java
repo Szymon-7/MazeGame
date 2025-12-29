@@ -17,6 +17,7 @@ public class Game extends Pane {
     private Player player;
     private Renderer renderer;
     private CollisionSystem collision;
+    private AudioManager audio;
 
     private boolean moveUp, moveDown, moveLeft, moveRight;
 
@@ -43,7 +44,9 @@ public class Game extends Pane {
 
         renderer = new Renderer(gc, canvas, maze, player);
 
-        collision = new CollisionSystem(maze, player);
+        audio = new AudioManager();
+
+        collision = new CollisionSystem(maze, player, audio);
 
         getChildren().add(canvas);
         initShopUI();
@@ -141,6 +144,9 @@ public class Game extends Pane {
         pauseOverlay.setVisible(paused);
 
         moveUp = moveDown = moveLeft = moveRight = false;
+
+        if (paused) audio.pauseBackground();
+        else audio.playBackground();
     }
 
     private void centerCanvas() {
@@ -189,6 +195,8 @@ public class Game extends Pane {
     }
 
     public void startGameLoop() {
+        audio.playBackground();
+
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
