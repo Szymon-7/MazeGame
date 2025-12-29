@@ -8,12 +8,13 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.geometry.*;
 
-public class MazeGame extends Pane {
+public class Game extends Pane {
     private Canvas canvas;
     private GraphicsContext gc;
 
     private Maze maze;
     private Player player;
+    private CollisionSystem collision;
 
     private long lastTime = 0;
 
@@ -93,7 +94,7 @@ public class MazeGame extends Pane {
         canvas.setLayoutY(y);
     }
 
-    public MazeGame() {
+    public Game() {
         maze = new Maze();
 
         canvas = new Canvas(750 + maze.getWallThickness(), 750 + maze.getWallThickness());
@@ -102,6 +103,8 @@ public class MazeGame extends Pane {
         floorTexture = new Image(getClass().getResource("/textures/floor.png").toExternalForm());
 
         player = new Player();
+
+        collision = new CollisionSystem(maze, player);
 
         getChildren().add(canvas);
         initShopUI();
@@ -141,28 +144,28 @@ public class MazeGame extends Pane {
         double distance = (player.getSpeed() + player.getSpeedLevel() * 25) * dt;
         boolean isMoving = false;
 
-        if (moveUp && canMove(0, -distance, player.getSize(), maze.getCellSize())) {
+        if (moveUp && collision.canMove(0, -distance)) {
             player.moveUp(distance);
             isMoving = true;
         }
-        if (moveDown && canMove(0, distance, player.getSize(), maze.getCellSize())) {
+        if (moveDown && collision.canMove(0, distance)) {
             player.moveDown(distance);
             isMoving = true;
         }
-        if (moveLeft && canMove(-distance, 0, player.getSize(), maze.getCellSize())) {
+        if (moveLeft && collision.canMove(-distance, 0)) {
             player.moveLeft(distance);
             isMoving = true;
         }
-        if (moveRight && canMove(distance, 0, player.getSize(), maze.getCellSize())) {
+        if (moveRight && collision.canMove(distance, 0)) {
             player.moveRight(distance);
             isMoving = true;
         }
 
         player.updateAnimation(dt, isMoving);
 
-        checkCoinCollisions();
-        checkShopCollision();
-        checkExitCollision();
+        collision.checkCoinCollisions();
+        canEnterShop = collision.isPlayerOnShop();
+        canExit = collision.isPlayerOnExit();
     }
 
     private void render() {
@@ -228,7 +231,7 @@ public class MazeGame extends Pane {
         if (canEnterShop && !inShop) {
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font("Verdana", 16));
-            gc.fillText("Press E to enter", canvas.getWidth() / 2, 425);
+            gc.fillText("Press E to enter shop", canvas.getWidth() / 2, 425);
         }
 
         if (canExit) {
@@ -309,68 +312,6 @@ public class MazeGame extends Pane {
         getChildren().add(pauseOverlay);
     }
 
-    public boolean canMove(double dx, double dy, int playerSize, int cellSize) {
-        double nextX = player.getX() + dx;
-        double nextY = player.getY() + dy;
-
-        double left = nextX;
-        double right = nextX + playerSize;
-        double top = nextY;
-        double bottom = nextY + playerSize;
-
-        int minRow = (int)(top / cellSize);
-        int maxRow = (int)((bottom - 0.001) / cellSize);
-        int minCol = (int)(left / cellSize);
-        int maxCol = (int)((right - 0.001) / cellSize);
-
-        for (int row = minRow; row <= maxRow; row++) {
-            for (int col = minCol; col <= maxCol; col++) {
-                Cell cell = maze.getGrid()[row][col];
-
-                double cellLeft = col * cellSize;
-                double cellRight = cellLeft + cellSize;
-                double cellTop = row * cellSize;
-                double cellBottom = cellTop + cellSize;
-
-                if (checkWallCollision(cell, top, bottom, left, right, cellTop, cellBottom, cellLeft, cellRight)) {
-                    return false;
-                }
-
-                if (checkCornerCollision(row, col, top, left, cellSize)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean checkWallCollision(Cell cell, double top, double bottom, double left, double right,
-                                    double cellTop, double cellBottom, double cellLeft, double cellRight) {
-        if (cell.top && top < cellTop + maze.getWallThickness() - 1 && bottom > cellTop) return true;
-        if (cell.bottom && bottom > cellBottom && top < cellBottom) return true;
-        if (cell.left && left < cellLeft + maze.getWallThickness() - 1 && right > cellLeft) return true;
-        if (cell.right && right > cellRight && left < cellRight) return true;
-        return false;
-    }
-
-    private boolean checkCornerCollision(int row, int col, double top, double left, int cellSize) {
-        if (row > 0 && col > 0) {
-            Cell above = maze.getGrid()[row - 1][col];
-            Cell leftCell = maze.getGrid()[row][col - 1];
-            Cell corner = maze.getGrid()[row - 1][col - 1];
-
-            boolean topWall = above.bottom;
-            boolean leftWall = leftCell.right;
-            boolean cornerWall = corner.bottom || corner.right;
-
-            boolean touchingCorner = top < (row * cellSize) + maze.getWallThickness() - 1 && left < (col * cellSize) + maze.getWallThickness() - 1;
-
-            return (topWall && leftWall || cornerWall) && touchingCorner;
-        }
-        return false;
-        
-    }
-
     private void drawFog(GraphicsContext gc, double centerX, double centerY, double radius) {
         RadialGradient gradient = new RadialGradient(
             0, 0,             // focusAngle, focusDistance
@@ -384,65 +325,6 @@ public class MazeGame extends Pane {
 
         gc.setFill(gradient);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-    }
-
-    private void checkCoinCollisions() {
-        double playerLeft = player.getX();
-        double playerRight = player.getX() + player.getSize();
-        double playerTop = player.getY();
-        double playerBottom = player.getY() + player.getSize();
-
-        for (int row = 0; row < maze.getRows(); row++) {
-            for (int col = 0; col < maze.getCols(); col++) {
-                Cell cell = maze.getGrid()[row][col];
-                if (!cell.hasCoin) continue;
-
-                // Coin position & radius
-                double coinX = col * maze.getCellSize() + maze.getCellSize() / 3.0;
-                double coinY = row * maze.getCellSize() + maze.getCellSize() / 3.0;
-                double coinRadius = maze.getCellSize() / 6.0;
-
-                // Closest point on player to coin center
-                double closestX = Math.max(playerLeft, Math.min(coinX + coinRadius, playerRight));
-                double closestY = Math.max(playerTop, Math.min(coinY + coinRadius, playerBottom));
-
-                // Distance from coin center
-                double dx = (coinX + coinRadius) - closestX;
-                double dy = (coinY + coinRadius) - closestY;
-
-                // Coin pickup with efficient formula
-                if (dx * dx + dy * dy < coinRadius * coinRadius) {
-                    cell.hasCoin = false;
-                    player.addCoins(1);
-                }
-            }
-        }
-    }
-
-    private void checkShopCollision() {
-        canEnterShop = false;
-
-        if (maze.getShop() == null) return;
-
-        int playerRow = (int)((player.getY() + player.getSize() / 2) / maze.getCellSize());
-        int playerCol = (int)((player.getX() + player.getSize() / 2) / maze.getCellSize());
-
-        if (playerRow == maze.getShop().row && playerCol == maze.getShop().col) {
-            canEnterShop = true;
-        }
-    }
-
-    private void checkExitCollision() {
-        canExit = false;
-
-        if (maze.getExit() == null) return;
-
-        int playerRow = (int)((player.getY() + player.getSize() / 2) / maze.getCellSize());
-        int playerCol = (int)((player.getX() + player.getSize() / 2) / maze.getCellSize());
-
-        if (playerRow == maze.getExit().row && playerCol == maze.getExit().col) {
-            canExit = true;
-        }
     }
 
     private void drawCellBackground(double offsetX, double offsetY, int cellsWide, int cellsHigh) {

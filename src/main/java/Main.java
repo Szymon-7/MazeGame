@@ -10,12 +10,12 @@ import javafx.scene.input.KeyCombination;
 
 public class Main extends Application {
 
-    private MazeGame game;
+    private Game game;
 
     @Override
     public void start(Stage stage) {
 
-        game = new MazeGame();
+        game = new Game();
         game.setVisible(false);
 
         StackPane root = new StackPane();
