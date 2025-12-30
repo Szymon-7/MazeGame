@@ -12,6 +12,7 @@ public class Player {
     private int lanternLevel = 1;
 
     private int currentFrame = 0;
+    private int lastFrame = 0;
     private double frameTime = 0;
 
     private Image upSprite;
@@ -22,6 +23,8 @@ public class Player {
 
     private final double FRAME_DURATION = 0.2;
     private final int FRAME_COUNT = 4;
+
+    private boolean footstep = false;
 
     public Player() {
         this.upSprite = loadImage("/sprites/moveUp.png");
@@ -85,15 +88,32 @@ public class Player {
     }
 
     public void updateAnimation(double dt, boolean isMoving) {
+        footstep = false;
+
         if (isMoving) {
             frameTime += dt;
             if (frameTime >= FRAME_DURATION) {
+                lastFrame = currentFrame;
                 currentFrame = (currentFrame + 1) % FRAME_COUNT; // sprite frames 0-3
                 frameTime = 0;
+
+                if ((currentFrame == 0 || currentFrame == 2) && currentFrame != lastFrame) {
+                    footstep = true;
+                }
             }
-        } else {
+        }
+        else {
             currentFrame = 0; // idle
             frameTime = 0;
         }
+    }
+
+    public boolean shouldMakeFootstep() {
+        if (footstep) {
+            footstep = false;
+            return true;
+        }
+
+        return false;
     }
 }

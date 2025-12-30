@@ -240,6 +240,7 @@ public class Game extends Pane {
         }
 
         player.updateAnimation(dt, isMoving);
+        if (player.shouldMakeFootstep()) { audio.playFootstep(); }
 
         collision.checkCoinCollisions();
         canEnterShop = collision.isPlayerOnShop();
