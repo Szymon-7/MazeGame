@@ -22,7 +22,7 @@ public class Player {
     private Image currentSprite;
 
     private final double FRAME_DURATION = 0.2;
-    private final int FRAME_COUNT = 4;
+    private final int FRAME_COUNT = 6;
 
     private boolean footstep = false;
 
@@ -89,22 +89,35 @@ public class Player {
 
     public void updateAnimation(double dt, boolean isMoving) {
         footstep = false;
+        frameTime += dt;
 
         if (isMoving) {
-            frameTime += dt;
+            if (currentFrame < 2) {
+                currentFrame = 2;
+                frameTime = 0;
+            }
+
             if (frameTime >= FRAME_DURATION) {
                 lastFrame = currentFrame;
-                currentFrame = (currentFrame + 1) % FRAME_COUNT; // sprite frames 0-3
+                currentFrame = 2 + ((currentFrame - 2 + 1) % (FRAME_COUNT - 2)); // Sprite frames 2-5 (walk)
                 frameTime = 0;
 
-                if ((currentFrame == 0 || currentFrame == 2) && currentFrame != lastFrame) {
+                if ((currentFrame == 2 || currentFrame == 4) && currentFrame != lastFrame) {
                     footstep = true;
                 }
             }
         }
         else {
-            currentFrame = 0; // idle
-            frameTime = 0;
+            if (currentFrame > 1) {
+                currentFrame = 0;
+                frameTime = 0;
+            }
+
+            // Idle animation frametime as 3x the walk feels fine
+            if (frameTime >= FRAME_DURATION * 3) {
+                currentFrame = (currentFrame == 0) ? 1 : 0; // Sprite frame 0-1 (idle)
+                frameTime = 0;
+            }
         }
     }
 
