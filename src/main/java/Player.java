@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Player {
 
     private double x, y;
-    private static final int size = 30;
+    private static final int size = 20;
     private double speed = 75;
 
     private int coins = 0;

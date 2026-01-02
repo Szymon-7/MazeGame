@@ -1,10 +1,12 @@
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.scene.input.KeyCombination;
 
@@ -15,7 +17,11 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
 
-        game = new Game();
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        double screenWidth = screenBounds.getWidth();
+        double screenHeight = screenBounds.getHeight();
+
+        game = new Game(screenWidth, screenHeight);
         game.setVisible(false);
 
         StackPane root = new StackPane();
@@ -36,7 +42,7 @@ public class Main extends Application {
 
         root.getChildren().addAll(game, menu);
 
-        Scene scene = new Scene(root, 750 + game.getMaze().getWallThickness(), 750 + game.getMaze().getWallThickness(), Color.BLACK);
+        Scene scene = new Scene(root, screenWidth, screenHeight, Color.BLACK);
 
         stage.setScene(scene);
         stage.setTitle("Maze Runner");
@@ -68,7 +74,7 @@ public class Main extends Application {
                         game.toggleShop();
                     }
                     else { game.togglePause(); }
-                } 
+                }
                 case F11 -> stage.setFullScreen(!stage.isFullScreen());
                 default -> {}
             }

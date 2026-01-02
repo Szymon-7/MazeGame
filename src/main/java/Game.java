@@ -34,10 +34,10 @@ public class Game extends Pane {
     private Button buyLanternButton;
     private Button buySpeedButton;
 
-    public Game() {
+    public Game(double width, double height) {
         maze = new Maze();
 
-        canvas = new Canvas(750 + maze.getWallThickness(), 750 + maze.getWallThickness());
+        canvas = new Canvas(width, height);
         gc = canvas.getGraphicsContext2D();
 
         player = new Player();
@@ -98,8 +98,8 @@ public class Game extends Pane {
         });
 
         VBox content = new VBox(25, title, exitHint, buyLanternButton, buySpeedButton);
-        content.setAlignment(Pos.TOP_CENTER);
-        content.setTranslateY(100);
+        content.setAlignment(Pos.CENTER);
+        content.setTranslateY(-375);
 
         shopOverlay = new StackPane(content);
         shopOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.85);");

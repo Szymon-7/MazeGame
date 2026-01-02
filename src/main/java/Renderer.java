@@ -15,6 +15,7 @@ public class Renderer {
     private final Maze maze;
     private final Player player;
     private final Image floorTexture;
+    private final Image coinSprite;
 
     // UI state (changes every frame via render)
     private boolean canExit;
@@ -27,6 +28,7 @@ public class Renderer {
         this.maze = maze;
         this.player = player;
         this.floorTexture = new Image(getClass().getResource("/textures/floor.png").toExternalForm());
+        this.coinSprite = new Image(getClass().getResource("/sprites/coin.png").toExternalForm());
     }
 
     public void render(boolean canExit, boolean inShop, boolean canEnterShop) {
@@ -63,8 +65,16 @@ public class Renderer {
                 if(cell.left) gc.strokeLine(x, y, x, y + maze.getCellSize());
                 if(cell.right) gc.strokeLine(x + maze.getCellSize(), y, x + maze.getCellSize(), y + maze.getCellSize());
 
-                gc.setFill(Color.GOLD);
-                if(cell.hasCoin) gc.fillOval(x + maze.getCellSize() / 3, y + maze.getCellSize() / 3, maze.getCellSize() / 3, maze.getCellSize() / 3);
+                if (cell.hasCoin) {
+                    gc.drawImage(
+                        coinSprite,
+                        0, 0,
+                        16, 16,
+                        x + (maze.getCellSize() - 8) / 2,
+                        y + (maze.getCellSize() - 8) / 2,
+                        8, 8
+                    );
+                }
             }
         }
 
@@ -94,6 +104,7 @@ public class Renderer {
                 double x = col * maze.getCellSize() + maze.getWallThickness() / 2 + offsetX;
                 double y = row * maze.getCellSize() + maze.getWallThickness() / 2 + offsetY;
 
+                // Casting to int fixes separation lines in the floor
                 gc.drawImage(floorTexture, (int)x, (int)y, (int)tileWidth, (int)tileHeight);
             }
         }
@@ -120,18 +131,18 @@ public class Renderer {
         gc.setFill(Color.GOLD);
         gc.setFont(Font.font("Verdana", 20));
         gc.setTextAlign(TextAlignment.CENTER);
-        gc.fillText("COINS: " + player.getCoins(), canvas.getWidth() / 2, canvas.getHeight() - 25);
+        gc.fillText("COINS: " + player.getCoins(), canvas.getWidth() / 2, canvas.getHeight() / 2 + 350);
 
         if (canEnterShop && !inShop) {
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font("Verdana", 16));
-            gc.fillText("Press E to enter shop", canvas.getWidth() / 2, 425);
+            gc.fillText("Press E to enter shop", canvas.getWidth() / 2, canvas.getHeight() / 2 + 50);
         }
 
         if (canExit) {
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font("Verdana", 16));
-            gc.fillText("Press E to exit maze", canvas.getWidth() / 2, 425);
+            gc.fillText("Press E to exit maze", canvas.getWidth() / 2, canvas.getHeight() / 2 + 50);
         }
 
         gc.restore();

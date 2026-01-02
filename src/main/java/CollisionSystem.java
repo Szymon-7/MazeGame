@@ -88,21 +88,16 @@ public class CollisionSystem {
                 Cell cell = maze.getGrid()[row][col];
                 if (!cell.hasCoin) continue;
 
-                // Coin position & radius
-                double coinX = col * maze.getCellSize() + maze.getCellSize() / 3.0;
-                double coinY = row * maze.getCellSize() + maze.getCellSize() / 3.0;
-                double coinRadius = maze.getCellSize() / 6.0;
+                double coinX = col * maze.getCellSize() + (maze.getCellSize() - 8) / 2;
+                double coinY = row * maze.getCellSize() + (maze.getCellSize() - 8) / 2;
+                double coinLeft = coinX;
+                double coinRight = coinX + 8;
+                double coinTop = coinY;
+                double coinBottom = coinY + 8;
 
-                // Closest point on player to coin center
-                double closestX = Math.max(playerLeft, Math.min(coinX + coinRadius, playerRight));
-                double closestY = Math.max(playerTop, Math.min(coinY + coinRadius, playerBottom));
+                boolean collision = playerRight > coinLeft && playerLeft < coinRight && playerBottom > coinTop && playerTop < coinBottom;
 
-                // Distance from coin center
-                double dx = (coinX + coinRadius) - closestX;
-                double dy = (coinY + coinRadius) - closestY;
-
-                // Coin pickup with efficient formula
-                if (dx * dx + dy * dy < coinRadius * coinRadius) {
+                if (collision) {
                     cell.hasCoin = false;
                     player.addCoins(1);
                     audio.playCoinPickup();
