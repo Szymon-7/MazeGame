@@ -15,6 +15,7 @@ public class Game extends Pane {
     private GraphicsContext gc;
     private Maze maze;
     private Player player;
+    private Coin coin;
     private Renderer renderer;
     private CollisionSystem collision;
     private AudioManager audio;
@@ -42,7 +43,9 @@ public class Game extends Pane {
 
         player = new Player();
 
-        renderer = new Renderer(gc, canvas, maze, player);
+        coin = new Coin();
+
+        renderer = new Renderer(gc, canvas, maze, player, coin);
 
         audio = new AudioManager();
 
@@ -241,6 +244,8 @@ public class Game extends Pane {
 
         player.updateAnimation(dt, isMoving);
         if (player.shouldMakeFootstep()) { audio.playFootstep(); }
+
+        coin.updateAnimation(dt);
 
         collision.checkCoinCollisions();
         canEnterShop = collision.isPlayerOnShop();

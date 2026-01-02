@@ -15,20 +15,20 @@ public class Renderer {
     private final Maze maze;
     private final Player player;
     private final Image floorTexture;
-    private final Image coinSprite;
+    private final Coin coin;
 
     // UI state (changes every frame via render)
     private boolean canExit;
     private boolean inShop;
     private boolean canEnterShop;
 
-    public Renderer(GraphicsContext gc, Canvas canvas, Maze maze, Player player) {
+    public Renderer(GraphicsContext gc, Canvas canvas, Maze maze, Player player, Coin coin) {
         this.gc = gc;
         this.canvas = canvas;
         this.maze = maze;
         this.player = player;
         this.floorTexture = new Image(getClass().getResource("/textures/floor.png").toExternalForm());
-        this.coinSprite = new Image(getClass().getResource("/sprites/coin.png").toExternalForm());
+        this.coin = coin;
     }
 
     public void render(boolean canExit, boolean inShop, boolean canEnterShop) {
@@ -66,14 +66,7 @@ public class Renderer {
                 if(cell.right) gc.strokeLine(x + maze.getCellSize(), y, x + maze.getCellSize(), y + maze.getCellSize());
 
                 if (cell.hasCoin) {
-                    gc.drawImage(
-                        coinSprite,
-                        0, 0,
-                        16, 16,
-                        x + (maze.getCellSize() - 8) / 2,
-                        y + (maze.getCellSize() - 8) / 2,
-                        8, 8
-                    );
+                    coin.render(gc, x + (maze.getCellSize() - 8) / 2, y + (maze.getCellSize() - 8) / 2);
                 }
             }
         }
