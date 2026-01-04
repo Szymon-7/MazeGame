@@ -40,12 +40,13 @@ public class Game extends Pane {
 
         canvas = new Canvas(width, height);
         gc = canvas.getGraphicsContext2D();
+        gc.setImageSmoothing(false);
 
         player = new Player();
 
         coin = new Coin();
 
-        renderer = new Renderer(gc, canvas, maze, player, coin);
+        renderer = new Renderer(this);
 
         audio = new AudioManager();
 
@@ -63,7 +64,11 @@ public class Game extends Pane {
         reset();
     }
 
+    public GraphicsContext getGc() { return gc; }
+    public Canvas getCanvas() { return canvas; }
     public Maze getMaze() { return maze; }
+    public Player getPlayer() { return player; }
+    public Coin getCoin() { return coin; }
     public boolean inShop() { return inShop; }
 
     public void setMoveUp(boolean value) { moveUp = value; }

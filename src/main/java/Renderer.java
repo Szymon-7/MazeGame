@@ -17,18 +17,20 @@ public class Renderer {
     private final Image floorTexture;
     private final Coin coin;
 
+    private final double SCALE = 2.0;
+
     // UI state (changes every frame via render)
     private boolean canExit;
     private boolean inShop;
     private boolean canEnterShop;
 
-    public Renderer(GraphicsContext gc, Canvas canvas, Maze maze, Player player, Coin coin) {
-        this.gc = gc;
-        this.canvas = canvas;
-        this.maze = maze;
-        this.player = player;
+    public Renderer(Game game) {
+        this.gc = game.getGc();
+        this.canvas = game.getCanvas();
+        this.maze = game.getMaze();
+        this.player = game.getPlayer();
+        this.coin = game.getCoin();
         this.floorTexture = new Image(getClass().getResource("/textures/floor.png").toExternalForm());
-        this.coin = coin;
     }
 
     public void render(boolean canExit, boolean inShop, boolean canEnterShop) {
@@ -36,13 +38,20 @@ public class Renderer {
         this.inShop = inShop;
         this.canEnterShop = canEnterShop;
 
-        double offsetX = (canvas.getWidth() / 2) - (player.getX() + player.getSize() / 2);
-        double offsetY = (canvas.getHeight() / 2) - (player.getY() + player.getSize() / 2);
+        double offsetX = ((canvas.getWidth() / SCALE) / 2) - (player.getX() + player.getSize() / 2);
+        double offsetY = ((canvas.getHeight() / SCALE) / 2) - (player.getY() + player.getSize() / 2);
 
-        gc.clearRect(0, 0, 750 + maze.getWallThickness(), 750 + maze.getWallThickness());
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        gc.save();
+        gc.scale(SCALE, SCALE);
 
         drawWorld(offsetX, offsetY);
         player.render(gc, offsetX, offsetY);
+
+        gc.restore();
+
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50 + (player.getLanternLevel() * 25));
         drawUI();
     }
 
@@ -84,8 +93,6 @@ public class Renderer {
 
             maze.getExit().draw(gc, x, y, maze.getCellSize());
         }
-
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 25 + (player.getLanternLevel() * 25));
     }
 
     private void drawCellBackground(double offsetX, double offsetY, int cellsWide, int cellsHigh) {
