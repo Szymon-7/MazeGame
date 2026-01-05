@@ -73,7 +73,7 @@ public class Maze {
         return neighbors;
     }
 
-    private void removeWall(Cell current, Cell next) {
+    public void removeWall(Cell current, Cell next) {
         if (next.row < current.row) {           // Next is above
             current.top = false;
             next.bottom = false;

@@ -34,6 +34,7 @@ public class Game extends Pane {
     private StackPane shopOverlay;
     private Button buyLanternButton;
     private Button buySpeedButton;
+    private Button buyPickaxeButton;
 
     public Game(double width, double height) {
         maze = new Maze();
@@ -105,7 +106,17 @@ public class Game extends Pane {
             }
         });
 
-        VBox content = new VBox(25, title, exitHint, buyLanternButton, buySpeedButton);
+        buyPickaxeButton = new Button("Pickaxe (Knock down walls - 1 use) - 1 Coin");
+        buyPickaxeButton.setFont(Font.font("Verdana", 18));
+
+        buyPickaxeButton.setOnAction(e -> {
+            if (player.getCoins() >= 1) {
+                if (player.addPickaxe() == true)
+                    player.addCoins(-1);
+            }
+        });
+
+        VBox content = new VBox(25, title, exitHint, buyLanternButton, buySpeedButton, buyPickaxeButton);
         content.setAlignment(Pos.CENTER);
         content.setTranslateY(-375);
 

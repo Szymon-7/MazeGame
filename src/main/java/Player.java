@@ -10,6 +10,7 @@ public class Player {
     private int coins = 0;
     private int speedLevel = 1;
     private int lanternLevel = 1;
+    private int pickaxes = 0;
 
     private int currentFrame = 0;
     private int lastFrame = 0;
@@ -54,6 +55,15 @@ public class Player {
     public void upgradeLantern() { lanternLevel++; }
     public int getSpeedLevel() { return speedLevel; }
     public void upgradeSpeed() { speedLevel++; }
+
+    public int getPickaxes() { return pickaxes; }
+    public boolean addPickaxe() { 
+        if (pickaxes == 0) {
+            pickaxes++; 
+            return true;
+        }
+        else return false;
+    }
 
     public void render(GraphicsContext gc, double offsetX, double offsetY) {
         gc.drawImage(
@@ -128,5 +138,33 @@ public class Player {
         }
 
         return false;
+    }
+
+    public void pickaxeWall(Maze maze) {
+        if (pickaxes <= 0) return;
+
+        int row = (int)((y + size / 2) / maze.getCellSize());
+        int col = (int)((x + size / 2) / maze.getCellSize());
+
+        Cell[][] grid = maze.getGrid();
+        Cell current = grid[row][col];
+
+        // Sprite facing direction with 2 edge cases (if actually in bounds & if wall is actually there)
+        if (currentSprite == upSprite && row > 0 && current.top) {
+            maze.removeWall(current, grid[row - 1][col]);
+            pickaxes--;
+        }
+        else if (currentSprite == downSprite && row < (maze.getRows() - 1) && current.bottom) {
+            maze.removeWall(current, grid[row + 1][col]);
+            pickaxes--;
+        }
+        else if (currentSprite == leftSprite && col > 0 && current.left) {
+            maze.removeWall(current, grid[row][col - 1]);
+            pickaxes--;
+        }
+        else if (currentSprite == rightSprite && col < maze.getCols() - 1 && current.right) {
+            maze.removeWall(current, grid[row][col + 1]);
+            pickaxes--;
+        }
     }
 }
