@@ -9,6 +9,7 @@ public class AudioManager {
 
     private MediaPlayer backgroundAudio;
     private List<AudioClip> coinPickupSounds;
+    private List<AudioClip> wallBreakSounds;
     private List<AudioClip> footstepSounds;
     private int lastFootstep = -1;
     private Random random = new Random();
@@ -25,6 +26,13 @@ public class AudioManager {
             new AudioClip(getClass().getResource("/audio/coinPickup4.wav").toExternalForm())
         );
 
+        wallBreakSounds = List.of(
+            new AudioClip(getClass().getResource("/audio/wallBreak1.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/wallBreak2.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/wallBreak3.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/wallBreak4.wav").toExternalForm())
+        );
+
         footstepSounds = List.of(
             new AudioClip(getClass().getResource("/audio/footstep1.wav").toExternalForm()),
             new AudioClip(getClass().getResource("/audio/footstep2.wav").toExternalForm()),
@@ -36,6 +44,7 @@ public class AudioManager {
     public void stopBackground() { backgroundAudio.stop(); }
     public void pauseBackground() { backgroundAudio.pause(); }
     public void playCoinPickup() { coinPickupSounds.get(random.nextInt(coinPickupSounds.size())).play(); }
+    public void playWallBreak() { wallBreakSounds.get(random.nextInt(wallBreakSounds.size())).play(); }
 
     // Random but not the last one played
     public void playFootstep() {

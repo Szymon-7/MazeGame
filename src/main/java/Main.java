@@ -75,7 +75,7 @@ public class Main extends Application {
                     }
                     else { game.togglePause(); }
                 }
-                case SPACE -> game.getPlayer().pickaxeWall(game.getMaze());
+                case SPACE -> game.getPlayer().pickaxeWall(game.getMaze(), game.getAudio());
                 case F11 -> stage.setFullScreen(!stage.isFullScreen());
                 default -> {}
             }

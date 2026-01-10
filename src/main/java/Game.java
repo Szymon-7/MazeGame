@@ -70,6 +70,7 @@ public class Game extends Pane {
     public Maze getMaze() { return maze; }
     public Player getPlayer() { return player; }
     public Coin getCoin() { return coin; }
+    public AudioManager getAudio() { return audio; }
     public boolean inShop() { return inShop; }
 
     public void setMoveUp(boolean value) { moveUp = value; }

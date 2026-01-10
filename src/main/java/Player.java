@@ -140,7 +140,7 @@ public class Player {
         return false;
     }
 
-    public void pickaxeWall(Maze maze) {
+    public void pickaxeWall(Maze maze, AudioManager audio) {
         if (pickaxes <= 0) return;
 
         int row = (int)((y + size / 2) / maze.getCellSize());
@@ -153,18 +153,22 @@ public class Player {
         if (currentSprite == upSprite && row > 0 && current.top) {
             maze.removeWall(current, grid[row - 1][col]);
             pickaxes--;
+            audio.playWallBreak();
         }
         else if (currentSprite == downSprite && row < (maze.getRows() - 1) && current.bottom) {
             maze.removeWall(current, grid[row + 1][col]);
             pickaxes--;
+            audio.playWallBreak();
         }
         else if (currentSprite == leftSprite && col > 0 && current.left) {
             maze.removeWall(current, grid[row][col - 1]);
             pickaxes--;
+            audio.playWallBreak();
         }
         else if (currentSprite == rightSprite && col < maze.getCols() - 1 && current.right) {
             maze.removeWall(current, grid[row][col + 1]);
             pickaxes--;
+            audio.playWallBreak();
         }
     }
 }
