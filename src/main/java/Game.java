@@ -262,10 +262,12 @@ public class Game extends Pane {
         player.updateAnimation(dt, isMoving);
         if (player.shouldMakeFootstep()) { audio.playFootstep(); }
 
+        collision.checkCoinCollisions();
         coin.updateAnimation(dt);
 
-        collision.checkCoinCollisions();
-        canEnterShop = collision.isPlayerOnShop();
         canExit = collision.isPlayerOnExit();
+        maze.getExit().updateAnimation(dt, canExit);
+
+        canEnterShop = collision.isPlayerOnShop();
     }
 }
