@@ -119,7 +119,6 @@ public class Game extends Pane {
 
         VBox content = new VBox(25, title, exitHint, buyLanternButton, buySpeedButton, buyPickaxeButton);
         content.setAlignment(Pos.CENTER);
-        content.setTranslateY(-375);
 
         shopOverlay = new StackPane(content);
         shopOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.85);");
