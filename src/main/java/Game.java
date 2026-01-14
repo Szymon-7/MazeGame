@@ -87,33 +87,33 @@ public class Game extends Pane {
         exitHint.setTextFill(Color.LIGHTGRAY);
         exitHint.setFont(Font.font("Verdana", 16));
 
-        buyLanternButton = new Button("Lantern Upgrade (+Vision) - 1 Coin");
+        buyLanternButton = new Button("Lantern Upgrade (+Vision) - 5 Coins");
         buyLanternButton.setFont(Font.font("Verdana", 18));
 
         buyLanternButton.setOnAction(e -> {
-            if (player.getCoins() >= 1) {
-                player.addCoins(-1);
+            if (player.getCoins() >= 5) {
+                player.addCoins(-5);
                 player.upgradeLantern();
             }
         });
 
-        buySpeedButton = new Button("Shoes Upgrade (+Speed) - 1 Coin");
+        buySpeedButton = new Button("Shoes Upgrade (+Speed) - 5 Coins");
         buySpeedButton.setFont(Font.font("Verdana", 18));
 
         buySpeedButton.setOnAction(e -> {
-            if (player.getCoins() >= 1) {
-                player.addCoins(-1);
+            if (player.getCoins() >= 5) {
+                player.addCoins(-5);
                 player.upgradeSpeed();
             }
         });
 
-        buyPickaxeButton = new Button("Pickaxe (Knock down walls - 1 use) - 1 Coin");
+        buyPickaxeButton = new Button("Pickaxe (Knock down walls - 1 use) - 10 Coins");
         buyPickaxeButton.setFont(Font.font("Verdana", 18));
 
         buyPickaxeButton.setOnAction(e -> {
-            if (player.getCoins() >= 1) {
+            if (player.getCoins() >= 10) {
                 if (player.addPickaxe() == true)
-                    player.addCoins(-1);
+                    player.addCoins(-10);
             }
         });
 
