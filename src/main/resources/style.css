@@ -1,0 +1,50 @@
+.shop-content {
+    -fx-spacing: 20;
+    -fx-padding: 40;
+}
+
+.shop-title {
+    -fx-font-size: 42px;
+    -fx-font-family: "Verdana";
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.coins-label {
+    -fx-text-fill: gold;
+    -fx-font-size: 14px;
+}
+
+.shop-exit-hint {
+    -fx-font-size: 14px;
+    -fx-text-fill: #A0A0A0; /* light gray */
+}
+
+.shop-button {
+    -fx-background-color: #2D2D2D; /* dark gray */
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 12 24;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    
+    -fx-min-width: 450px;
+    -fx-max-width: 450px;
+    -fx-min-height: 50px;
+}
+
+.shop-button:hover {
+    -fx-background-color: #404040; /* lighter gray */
+    -fx-border-color: #606060;
+    -fx-border-radius: 5;
+}
+
+.shop-button:pressed {
+    -fx-background-color: #1A1A1A; /* almost black */
+    -fx-translate-y: 2;
+}
+
+.shop-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.85);
+}
+

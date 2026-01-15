@@ -1,4 +1,6 @@
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -35,6 +37,7 @@ public class Game extends Pane {
     private Button buyLanternButton;
     private Button buySpeedButton;
     private Button buyPickaxeButton;
+    private Label coinsLabel;
 
     public Game(double width, double height) {
         maze = new Maze();
@@ -79,55 +82,61 @@ public class Game extends Pane {
     public void setMoveRight(boolean value) { moveRight = value; }
 
     private void initShopUI() {
+        getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
         Label title = new Label("SHOP");
-        title.setTextFill(Color.WHITE);
-        title.setFont(Font.font("Verdana", 32));
+        title.getStyleClass().add("shop-title");
 
         Label exitHint = new Label("Press E or ESC to leave");
-        exitHint.setTextFill(Color.LIGHTGRAY);
-        exitHint.setFont(Font.font("Verdana", 16));
+        exitHint.getStyleClass().add("shop-exit-hint");
 
-        buyLanternButton = new Button("Lantern Upgrade (+Vision) - 5 Coins");
-        buyLanternButton.setFont(Font.font("Verdana", 18));
+        coinsLabel = new Label("Coins: " + player.getCoins());
+        coinsLabel.getStyleClass().add("coins-label");
 
-        buyLanternButton.setOnAction(e -> {
+        buyLanternButton = createShopButton("Lantern Upgrade (+Vision)", 5, e -> {
             if (player.getCoins() >= 5) {
                 player.addCoins(-5);
                 player.upgradeLantern();
+                coinsLabel.setText("Coins: " + player.getCoins());
             }
         });
 
-        buySpeedButton = new Button("Shoes Upgrade (+Speed) - 5 Coins");
-        buySpeedButton.setFont(Font.font("Verdana", 18));
-
-        buySpeedButton.setOnAction(e -> {
+        buySpeedButton = createShopButton("Shoes Upgrade (+Speed)", 5, e -> {
             if (player.getCoins() >= 5) {
                 player.addCoins(-5);
                 player.upgradeSpeed();
+                coinsLabel.setText("Coins: " + player.getCoins());
             }
         });
 
-        buyPickaxeButton = new Button("Pickaxe (Knock down walls - 1 use) - 10 Coins");
-        buyPickaxeButton.setFont(Font.font("Verdana", 18));
-
-        buyPickaxeButton.setOnAction(e -> {
+        buyPickaxeButton = createShopButton("Pickaxe (Knock down walls - 1 use)", 10, e -> {
             if (player.getCoins() >= 10) {
-                if (player.addPickaxe() == true)
+                if (player.addPickaxe()) {
                     player.addCoins(-10);
+                    coinsLabel.setText("Coins: " + player.getCoins());
+                }
             }
         });
 
-        VBox content = new VBox(25, title, exitHint, buyLanternButton, buySpeedButton, buyPickaxeButton);
+        VBox content = new VBox(25, title, coinsLabel, exitHint, buyLanternButton, buySpeedButton, buyPickaxeButton);
         content.setAlignment(Pos.CENTER);
+        content.getStyleClass().add("shop-content");
 
         shopOverlay = new StackPane(content);
-        shopOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.85);");
+        shopOverlay.getStyleClass().add("shop-overlay");
         shopOverlay.setVisible(false);
 
         shopOverlay.prefWidthProperty().bind(widthProperty());
         shopOverlay.prefHeightProperty().bind(heightProperty());
 
         getChildren().add(shopOverlay);
+    }
+
+    private Button createShopButton(String text, int price, EventHandler<ActionEvent> handler) {
+        Button button = new Button(text + " - " + price + " Coins");
+        button.getStyleClass().add("shop-button");
+        button.setOnAction(handler);
+        return button;
     }
 
     private void initPauseUI() {
@@ -263,6 +272,7 @@ public class Game extends Pane {
 
         collision.checkCoinCollisions();
         coin.updateAnimation(dt);
+        coinsLabel.setText("Coins: " + player.getCoins());
 
         canExit = collision.isPlayerOnExit();
         maze.getExit().updateAnimation(dt, canExit);
