@@ -9,8 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 public class Game extends Pane {
     private Canvas canvas;
@@ -26,6 +24,8 @@ public class Game extends Pane {
 
     private boolean paused = false;
     private StackPane pauseOverlay;
+    private double timePlayed = 0;
+    private Label timerLabel;
 
     private boolean canExit = false;
     private boolean inShop = false;
@@ -141,28 +141,36 @@ public class Game extends Pane {
 
     private void initPauseUI() {
         Label title = new Label("PAUSED");
-        title.setTextFill(Color.WHITE);
-        title.setFont(Font.font("Verdana", 36));
+        title.getStyleClass().add("pause-title");
+
+        timerLabel = new Label("Time: 00:00");
+        timerLabel.getStyleClass().add("timer-label");
 
         Button resumeButton = new Button("Resume");
-        resumeButton.setFont(Font.font("Verdana", 18));
+        resumeButton.getStyleClass().add("shop-button");
         resumeButton.setOnAction(e -> togglePause());
 
         Button exitButton = new Button("Exit Game");
-        exitButton.setFont(Font.font("Verdana", 18));
+        exitButton.getStyleClass().add("shop-button");
         exitButton.setOnAction(e -> { javafx.application.Platform.exit(); });
 
-        VBox content = new VBox(30, title, resumeButton, exitButton);
+        VBox content = new VBox(30, title, timerLabel, resumeButton, exitButton);
         content.setAlignment(Pos.CENTER);
 
         pauseOverlay = new StackPane(content);
-        pauseOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.85);");
+        pauseOverlay.getStyleClass().add("shop-overlay");
         pauseOverlay.setVisible(false);
 
         pauseOverlay.prefWidthProperty().bind(widthProperty());
         pauseOverlay.prefHeightProperty().bind(heightProperty());
 
         getChildren().add(pauseOverlay);
+    }
+
+    private void updateTimer() {
+        int minutes = (int)(timePlayed / 60);
+        int seconds = (int)(timePlayed % 60);
+        timerLabel.setText(String.format("Time played: %02d:%02d", minutes, seconds));
     }
 
     public void togglePause() {
@@ -266,6 +274,9 @@ public class Game extends Pane {
             player.moveRight(distance);
             isMoving = true;
         }
+
+        timePlayed += dt;
+        updateTimer();
 
         player.updateAnimation(dt, isMoving);
         if (player.shouldMakeFootstep()) { audio.playFootstep(); }

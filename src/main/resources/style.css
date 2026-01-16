@@ -1,3 +1,16 @@
+.pause-title {
+    -fx-font-size: 48px;
+    -fx-font-family: "Verdana";
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.timer-label {
+    -fx-font-family: "Verdana";
+    -fx-font-size: 20px;
+    -fx-text-fill: #00FF00; /* neon green */
+}
+
 .shop-content {
     -fx-spacing: 20;
     -fx-padding: 40;
