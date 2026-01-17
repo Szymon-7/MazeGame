@@ -1,3 +1,26 @@
+.title {
+    -fx-fill: white;
+    -fx-font-size: 64px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Verdana";
+}
+
+.play-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 36px;
+    -fx-font-family: "Verdana";
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-transition: all 0.15s ease-in-out;
+}
+
+.play-button:hover {
+    -fx-text-fill: gold;
+    -fx-scale-x: 1.15;
+    -fx-scale-y: 1.15;
+}
+
 .pause-title {
     -fx-font-size: 48px;
     -fx-font-family: "Verdana";

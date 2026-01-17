@@ -31,11 +31,10 @@ public class Main extends Application {
 
         // TITLE SCREEN
         Text title = new Text("MAZE RUNNER");
-        title.setFill(Color.WHITE);
-        title.setStyle("-fx-font-size: 64px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title");
 
-        Button playButton = new Button("Play");
-        playButton.setStyle("-fx-font-size: 24px;");
+        Button playButton = new Button("PLAY");
+        playButton.getStyleClass().add("play-button");
 
         VBox menu = new VBox(30, title, playButton);
         menu.setAlignment(Pos.CENTER);
@@ -43,6 +42,7 @@ public class Main extends Application {
         root.getChildren().addAll(game, menu);
 
         Scene scene = new Scene(root, screenWidth, screenHeight, Color.BLACK);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle("Maze Runner");
