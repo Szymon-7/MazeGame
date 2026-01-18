@@ -1,4 +1,5 @@
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -9,6 +10,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 public class Game extends Pane {
     private Canvas canvas;
@@ -26,6 +30,7 @@ public class Game extends Pane {
     private StackPane pauseOverlay;
     private double timePlayed = 0;
     private Label timerLabel;
+    private Rectangle fadeOverlay;
 
     private boolean canExit = false;
     private boolean inShop = false;
@@ -64,6 +69,14 @@ public class Game extends Pane {
         widthProperty().addListener((obs, oldW, newW) -> centerCanvas());
         heightProperty().addListener((obs, oldH, newH) -> centerCanvas());
         centerCanvas();
+
+        fadeOverlay = new Rectangle();
+        fadeOverlay.setFill(Color.BLACK);
+        fadeOverlay.setOpacity(0);
+        fadeOverlay.setMouseTransparent(true);
+        fadeOverlay.widthProperty().bind(widthProperty());
+        fadeOverlay.heightProperty().bind(heightProperty());
+        getChildren().add(fadeOverlay);
 
         reset();
     }
@@ -194,7 +207,22 @@ public class Game extends Pane {
 
     public void interact() {
         if (canExit) {
-            reset();
+            audio.playLadder();
+
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.8), fadeOverlay);
+            fadeOut.setFromValue(0);
+            fadeOut.setToValue(1);
+
+            fadeOut.setOnFinished(e -> {
+                reset();
+
+                FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.8), fadeOverlay);
+                fadeIn.setFromValue(1);
+                fadeIn.setToValue(0);
+                fadeIn.play();
+            });
+
+            fadeOut.play();
             return;
         }
 

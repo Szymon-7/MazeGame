@@ -12,6 +12,7 @@ public class AudioManager {
     private List<AudioClip> wallBreakSounds;
     private List<AudioClip> footstepSounds;
     private int lastFootstep = -1;
+    private List<AudioClip> ladderSounds;
     private Random random = new Random();
 
     public AudioManager() {
@@ -38,6 +39,12 @@ public class AudioManager {
             new AudioClip(getClass().getResource("/audio/footstep2.wav").toExternalForm()),
             new AudioClip(getClass().getResource("/audio/footstep3.wav").toExternalForm())
         );
+
+        ladderSounds = List.of(
+            new AudioClip(getClass().getResource("/audio/ladder1.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/ladder2.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/ladder3.wav").toExternalForm())
+        );
     }
 
     public void playBackground() { backgroundAudio.play(); }
@@ -45,6 +52,7 @@ public class AudioManager {
     public void pauseBackground() { backgroundAudio.pause(); }
     public void playCoinPickup() { coinPickupSounds.get(random.nextInt(coinPickupSounds.size())).play(); }
     public void playWallBreak() { wallBreakSounds.get(random.nextInt(wallBreakSounds.size())).play(); }
+    public void playLadder() { ladderSounds.get(random.nextInt(ladderSounds.size())).play(); }
 
     // Random but not the last one played
     public void playFootstep() {
