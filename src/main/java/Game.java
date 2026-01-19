@@ -111,7 +111,9 @@ public class Game extends Pane {
                 player.addCoins(-5);
                 player.upgradeLantern();
                 coinsLabel.setText("Coins: " + player.getCoins());
+                audio.playShopBuy();
             }
+            audio.playShopErr();
         });
 
         buySpeedButton = createShopButton("Shoes Upgrade (+Speed)", 5, e -> {
@@ -119,7 +121,9 @@ public class Game extends Pane {
                 player.addCoins(-5);
                 player.upgradeSpeed();
                 coinsLabel.setText("Coins: " + player.getCoins());
+                audio.playShopBuy();
             }
+            audio.playShopErr();
         });
 
         buyPickaxeButton = createShopButton("Pickaxe (Knock down walls - 1 use)", 10, e -> {
@@ -127,8 +131,10 @@ public class Game extends Pane {
                 if (player.addPickaxe()) {
                     player.addCoins(-10);
                     coinsLabel.setText("Coins: " + player.getCoins());
+                    audio.playShopBuy();
                 }
             }
+            audio.playShopErr();
         });
 
         VBox content = new VBox(25, title, coinsLabel, exitHint, buyLanternButton, buySpeedButton, buyPickaxeButton);
