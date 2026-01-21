@@ -57,6 +57,7 @@ public class Main extends Application {
             menu.setManaged(false);
 
             game.setVisible(true);
+            game.getAudio().playStart();
             game.playStartFade();
             game.startGameLoop();
             game.requestFocus();

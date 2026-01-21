@@ -14,12 +14,15 @@ public class AudioManager {
     private int lastFootstep = -1;
     private List<AudioClip> ladderSounds;
     private List<AudioClip> shopSounds;
+    private AudioClip startSound;
     private Random random = new Random();
 
     public AudioManager() {
         backgroundAudio = new MediaPlayer(new Media(getClass().getResource("/audio/background.wav").toExternalForm()));
         backgroundAudio.setCycleCount(MediaPlayer.INDEFINITE);
         backgroundAudio.setVolume(0.025);
+
+        startSound = new AudioClip(getClass().getResource("/audio/start.wav").toExternalForm());
 
         coinPickupSounds = List.of(
             new AudioClip(getClass().getResource("/audio/coinPickup1.wav").toExternalForm()),
@@ -58,6 +61,7 @@ public class AudioManager {
     public void playBackground() { backgroundAudio.play(); }
     public void stopBackground() { backgroundAudio.stop(); }
     public void pauseBackground() { backgroundAudio.pause(); }
+    public void playStart() { startSound.play(); }
     public void playCoinPickup() { coinPickupSounds.get(random.nextInt(coinPickupSounds.size())).play(); }
     public void playWallBreak() { wallBreakSounds.get(random.nextInt(wallBreakSounds.size())).play(); }
     public void playLadder() { ladderSounds.get(random.nextInt(ladderSounds.size())).play(); }
