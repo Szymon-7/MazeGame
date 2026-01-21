@@ -322,4 +322,13 @@ public class Game extends Pane {
 
         canEnterShop = collision.isPlayerOnShop();
     }
+
+    public void playStartFade() {
+        fadeOverlay.setOpacity(1.0);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(1.5), fadeOverlay);
+        fadeIn.setFromValue(1.0);
+        fadeIn.setToValue(0.0);
+        fadeIn.play();
+    }
 }
