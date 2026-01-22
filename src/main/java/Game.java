@@ -28,6 +28,7 @@ public class Game extends Pane {
 
     private boolean paused = false;
     private StackPane pauseOverlay;
+    private Label mazeLevelLabel;
     private double timePlayed = 0;
     private Label timerLabel;
     private Rectangle fadeOverlay;
@@ -160,8 +161,11 @@ public class Game extends Pane {
         Label title = new Label("PAUSED");
         title.getStyleClass().add("pause-title");
 
-        timerLabel = new Label("Time: 00:00");
+        timerLabel = new Label("Time played: 00:00");
         timerLabel.getStyleClass().add("timer-label");
+
+        mazeLevelLabel = new Label("Maze 0");
+        mazeLevelLabel.getStyleClass().add("maze-level-label");
 
         Button resumeButton = new Button("Resume");
         resumeButton.getStyleClass().add("shop-button");
@@ -171,7 +175,7 @@ public class Game extends Pane {
         exitButton.getStyleClass().add("shop-button");
         exitButton.setOnAction(e -> { javafx.application.Platform.exit(); });
 
-        VBox content = new VBox(30, title, timerLabel, resumeButton, exitButton);
+        VBox content = new VBox(30, title, timerLabel, mazeLevelLabel, resumeButton, exitButton);
         content.setAlignment(Pos.CENTER);
 
         pauseOverlay = new StackPane(content);
@@ -243,6 +247,7 @@ public class Game extends Pane {
         shopOverlay.setVisible(false);
 
         player.moveDown(0); // Set sprite to down on reset
+        mazeLevelLabel.setText(String.format("Maze %d", maze.getMazeLevel()));
 
         inShop = false;
         canEnterShop = false;

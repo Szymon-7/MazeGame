@@ -21,6 +21,7 @@ public class Maze {
     public int getRows() { return rows; }
     public int getCols() { return cols; }
     public Cell[][] getGrid() { return grid; }
+    public int getMazeLevel() { return mazeLevel; }
     public int getCellSize() { return cellSize; }
     public int getWallThickness() { return wallThickness; }
     public Shop getShop() { return shop; }

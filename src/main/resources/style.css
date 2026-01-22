@@ -28,6 +28,13 @@
     -fx-text-fill: white;
 }
 
+.maze-level-label {
+    -fx-font-family: "Verdana";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FF0000; /* red */
+}
+
 .timer-label {
     -fx-font-family: "Verdana";
     -fx-font-size: 20px;
