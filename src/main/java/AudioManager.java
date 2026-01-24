@@ -18,43 +18,43 @@ public class AudioManager {
     private Random random = new Random();
 
     public AudioManager() {
-        backgroundAudio = new MediaPlayer(new Media(getClass().getResource("/audio/background.wav").toExternalForm()));
+        backgroundAudio = new MediaPlayer(new Media(getClass().getResource("/audio/game/background.wav").toExternalForm()));
         backgroundAudio.setCycleCount(MediaPlayer.INDEFINITE);
-        backgroundAudio.setVolume(0.025);
+        backgroundAudio.setVolume(0.1);
 
-        startSound = new AudioClip(getClass().getResource("/audio/start.wav").toExternalForm());
+        startSound = new AudioClip(getClass().getResource("/audio/game/start.wav").toExternalForm());
 
         coinPickupSounds = List.of(
-            new AudioClip(getClass().getResource("/audio/coinPickup1.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/coinPickup2.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/coinPickup3.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/coinPickup4.wav").toExternalForm())
+            new AudioClip(getClass().getResource("/audio/coin/coinPickup1.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/coin/coinPickup2.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/coin/coinPickup3.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/coin/coinPickup4.wav").toExternalForm())
         );
 
         wallBreakSounds = List.of(
-            new AudioClip(getClass().getResource("/audio/wallBreak1.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/wallBreak2.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/wallBreak3.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/wallBreak4.wav").toExternalForm())
+            new AudioClip(getClass().getResource("/audio/maze/wallBreak1.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/maze/wallBreak2.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/maze/wallBreak3.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/maze/wallBreak4.wav").toExternalForm())
         );
 
         footstepSounds = List.of(
-            new AudioClip(getClass().getResource("/audio/footstep1.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/footstep2.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/footstep3.wav").toExternalForm())
+            new AudioClip(getClass().getResource("/audio/player/footstep1.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/player/footstep2.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/player/footstep3.wav").toExternalForm())
         );
 
         ladderSounds = List.of(
-            new AudioClip(getClass().getResource("/audio/ladder1.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/ladder2.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/ladder3.wav").toExternalForm())
+            new AudioClip(getClass().getResource("/audio/maze/ladder1.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/maze/ladder2.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/maze/ladder3.wav").toExternalForm())
         );
 
         shopSounds = List.of(
-            new AudioClip(getClass().getResource("/audio/shopErr.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/shopBuy1.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/shopBuy2.wav").toExternalForm()),
-            new AudioClip(getClass().getResource("/audio/shopBuy3.wav").toExternalForm())
+            new AudioClip(getClass().getResource("/audio/shop/shopErr.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/shop/shopBuy1.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/shop/shopBuy2.wav").toExternalForm()),
+            new AudioClip(getClass().getResource("/audio/shop/shopBuy3.wav").toExternalForm())
         );
     }
 
