@@ -107,29 +107,32 @@ public class Game extends Pane {
         coinsLabel = new Label("Coins: " + player.getCoins());
         coinsLabel.getStyleClass().add("coins-label");
 
-        buyLanternButton = createShopButton("Lantern Upgrade (+Vision)", 5, e -> {
+        buyLanternButton = createShopButton("Lantern " + player.getLanternLevel() + " Upgrade (+Vision)", 5, e -> {
             if (player.getCoins() >= 5) {
                 player.addCoins(-5);
                 player.upgradeLantern();
+                buyLanternButton.setText("Lantern " + player.getLanternLevel() + " Upgrade (+Vision)" + " - 5 Coins");
                 coinsLabel.setText("Coins: " + player.getCoins());
                 audio.playShopBuy();
             }
             else { audio.playShopErr(); }
         });
 
-        buySpeedButton = createShopButton("Shoes Upgrade (+Speed)", 5, e -> {
+        buySpeedButton = createShopButton("Shoes " + player.getSpeedLevel() + " Upgrade (+Speed)", 5, e -> {
             if (player.getCoins() >= 5) {
                 player.addCoins(-5);
                 player.upgradeSpeed();
+                buySpeedButton.setText("Shoes " + player.getSpeedLevel() + " Upgrade (+Speed)" + " - 5 Coins");
                 coinsLabel.setText("Coins: " + player.getCoins());
                 audio.playShopBuy();
             }
             else { audio.playShopErr(); }
         });
 
-        buyPickaxeButton = createShopButton("Pickaxe (Knock down walls - 1 use)", 10, e -> {
+        buyPickaxeButton = createShopButton("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use)", 10, e -> {
             if (player.getCoins() >= 10 && player.addPickaxe()) {
                 player.addCoins(-10);
+                buyPickaxeButton.setText("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use)" + " - 10 Coins");
                 coinsLabel.setText("Coins: " + player.getCoins());
                 audio.playShopBuy();
             }
@@ -234,7 +237,10 @@ public class Game extends Pane {
             return;
         }
 
-        if (canEnterShop) toggleShop();
+        if (canEnterShop) {
+            toggleShop();
+            buyPickaxeButton.setText("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use)" + " - 10 Coins"); // Update pickaxe amount in shop
+        }
     }
 
     public void reset() {

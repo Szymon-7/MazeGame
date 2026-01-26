@@ -28,10 +28,10 @@ public class Player {
     private boolean footstep = false;
 
     public Player() {
-        this.upSprite = loadImage("/sprites/moveUp.png");
-        this.downSprite = loadImage("/sprites/moveDown.png");
-        this.leftSprite = loadImage("/sprites/moveLeft.png");
-        this.rightSprite = loadImage("/sprites/moveRight.png");
+        this.upSprite = loadImage("/sprites/character/moveUp.png");
+        this.downSprite = loadImage("/sprites/character/moveDown.png");
+        this.leftSprite = loadImage("/sprites/character/moveLeft.png");
+        this.rightSprite = loadImage("/sprites/character/moveRight.png");
         this.currentSprite = downSprite;
     }
 
