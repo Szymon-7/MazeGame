@@ -11,6 +11,7 @@ public class Player {
     private int speedLevel = 1;
     private int lanternLevel = 1;
     private int pickaxes = 0;
+    private int bagLevel = 1;
 
     private int currentFrame = 0;
     private int lastFrame = 0;
@@ -55,10 +56,12 @@ public class Player {
     public void upgradeLantern() { lanternLevel++; }
     public int getSpeedLevel() { return speedLevel; }
     public void upgradeSpeed() { speedLevel++; }
+    public int getBagLevel() { return bagLevel; }
+    public void upgradeBag() { bagLevel++; }
 
     public int getPickaxes() { return pickaxes; }
     public boolean addPickaxe() { 
-        if (pickaxes == 0) {
+        if (pickaxes < bagLevel) {
             pickaxes++; 
             return true;
         }

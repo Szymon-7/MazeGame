@@ -43,6 +43,7 @@ public class Game extends Pane {
     private Button buyLanternButton;
     private Button buySpeedButton;
     private Button buyPickaxeButton;
+    private Button buyBagButton;
     private Label coinsLabel;
 
     public Game(double width, double height) {
@@ -111,7 +112,7 @@ public class Game extends Pane {
             if (player.getCoins() >= 5) {
                 player.addCoins(-5);
                 player.upgradeLantern();
-                buyLanternButton.setText("Lantern " + player.getLanternLevel() + " Upgrade (+Vision)" + " - 5 Coins");
+                buyLanternButton.setText("Lantern " + player.getLanternLevel() + " Upgrade (+Vision) - 5 Coins");
                 coinsLabel.setText("Coins: " + player.getCoins());
                 audio.playShopBuy();
             }
@@ -122,7 +123,7 @@ public class Game extends Pane {
             if (player.getCoins() >= 5) {
                 player.addCoins(-5);
                 player.upgradeSpeed();
-                buySpeedButton.setText("Shoes " + player.getSpeedLevel() + " Upgrade (+Speed)" + " - 5 Coins");
+                buySpeedButton.setText("Shoes " + player.getSpeedLevel() + " Upgrade (+Speed) - 5 Coins");
                 coinsLabel.setText("Coins: " + player.getCoins());
                 audio.playShopBuy();
             }
@@ -132,14 +133,25 @@ public class Game extends Pane {
         buyPickaxeButton = createShopButton("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use)", 10, e -> {
             if (player.getCoins() >= 10 && player.addPickaxe()) {
                 player.addCoins(-10);
-                buyPickaxeButton.setText("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use)" + " - 10 Coins");
+                buyPickaxeButton.setText("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use) - 10 Coins");
                 coinsLabel.setText("Coins: " + player.getCoins());
                 audio.playShopBuy();
             }
             else { audio.playShopErr(); }
         });
 
-        VBox content = new VBox(25, title, coinsLabel, exitHint, buyLanternButton, buySpeedButton, buyPickaxeButton);
+        buyBagButton = createShopButton("Bag " + player.getBagLevel() + " Upgrade (Hold more pickaxes)", 10, e -> {
+            if (player.getCoins() >= 10) {
+                player.addCoins(-10);
+                player.upgradeBag();
+                buyBagButton.setText("Bag " + player.getBagLevel() + " Upgrade (Hold more pickaxes) - 10 Coins");
+                coinsLabel.setText("Coins: " + player.getCoins());
+                audio.playShopBuy();
+            }
+            else { audio.playShopErr(); }
+        });
+
+        VBox content = new VBox(25, title, coinsLabel, exitHint, buyLanternButton, buySpeedButton, buyPickaxeButton, buyBagButton);
         content.setAlignment(Pos.CENTER);
         content.getStyleClass().add("shop-content");
 
