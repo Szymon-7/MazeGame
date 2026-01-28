@@ -1,3 +1,5 @@
+package mazegame;
+
 public class Cell {
     boolean top = true, bottom = true, left = true, right = true;
     boolean visited = false;

@@ -55,7 +55,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>Main</mainClass>
+                    <mainClass>mazegame/mazegame.Main</mainClass>
+                    <launcher>MazeGame</launcher>
                     <options>
                         <option>--enable-native-access=javafx.graphics</option>
                         <option>--enable-native-access=javafx.media</option>

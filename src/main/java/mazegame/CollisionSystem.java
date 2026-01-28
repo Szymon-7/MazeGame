@@ -1,3 +1,5 @@
+package mazegame;
+
 public class CollisionSystem {
 
     private final Maze maze;

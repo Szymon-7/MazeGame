@@ -1,3 +1,5 @@
+package mazegame;
+
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
 

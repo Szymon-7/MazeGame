@@ -1,3 +1,5 @@
+package mazegame;
+
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;

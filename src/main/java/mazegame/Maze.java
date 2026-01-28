@@ -1,3 +1,5 @@
+package mazegame;
+
 import java.util.*;
 
 public class Maze {
