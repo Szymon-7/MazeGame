@@ -55,7 +55,7 @@ public class Game extends Pane {
         gc = canvas.getGraphicsContext2D();
         gc.setImageSmoothing(false);
 
-        player = new Player();
+        player = new Player(true);
 
         coin = new Coin();
 

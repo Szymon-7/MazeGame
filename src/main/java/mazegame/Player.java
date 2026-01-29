@@ -30,12 +30,14 @@ public class Player {
 
     private boolean footstep = false;
 
-    public Player() {
-        this.upSprite = loadImage("/sprites/character/moveUp.png");
-        this.downSprite = loadImage("/sprites/character/moveDown.png");
-        this.leftSprite = loadImage("/sprites/character/moveLeft.png");
-        this.rightSprite = loadImage("/sprites/character/moveRight.png");
-        this.currentSprite = downSprite;
+    public Player(boolean loadSprites) {
+        if (loadSprites) {
+            this.upSprite = loadImage("/sprites/character/moveUp.png");
+            this.downSprite = loadImage("/sprites/character/moveDown.png");
+            this.leftSprite = loadImage("/sprites/character/moveLeft.png");
+            this.rightSprite = loadImage("/sprites/character/moveRight.png");
+            this.currentSprite = downSprite;
+        }
     }
 
     // Helper for loading sprites above
