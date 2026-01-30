@@ -105,4 +105,31 @@ public class PlayerTest {
         assertTrue(p.addPickaxe());
         assertFalse(p.addPickaxe());
     }
+
+    @Test
+    void upgradeLanternCorrectly() {
+        Player p = new Player(false);
+
+        assertEquals(1, p.getLanternLevel());
+        p.upgradeLantern();
+        assertEquals(2, p.getLanternLevel());
+    }
+
+    @Test
+    void upgradeSpeedCorrectly() {
+        Player p = new Player(false);
+
+        assertEquals(1, p.getSpeedLevel());
+        p.upgradeSpeed();
+        assertEquals(2, p.getSpeedLevel());
+    }
+
+    @Test
+    void upgradeBagCorrectly() {
+        Player p = new Player(false);
+
+        assertEquals(1, p.getBagLevel());
+        p.upgradeBag();
+        assertEquals(2, p.getBagLevel());
+    }
 }
