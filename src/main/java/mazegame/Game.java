@@ -259,7 +259,7 @@ public class Game extends Pane {
 
     public void reset() {
 
-        maze.resetMaze();
+        maze.resetMaze(true);
 
         player.setX(maze.getCenter() - player.getSize() / 2);
         player.setY(maze.getCenter() - player.getSize() / 2);

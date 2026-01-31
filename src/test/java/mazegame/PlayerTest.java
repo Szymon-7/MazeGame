@@ -132,4 +132,14 @@ public class PlayerTest {
         p.upgradeBag();
         assertEquals(2, p.getBagLevel());
     }
+
+    @Test
+    void addPickaxeRespectsBagUpgrade() {
+        Player p = new Player(false);
+
+        p.upgradeBag();
+        assertTrue(p.addPickaxe());
+        assertTrue(p.addPickaxe());
+        assertFalse(p.addPickaxe());
+    }
 }

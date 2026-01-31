@@ -30,7 +30,7 @@ public class Maze {
     public Exit getExit() { return exit; }
     public double getCenter() { return (rows * cellSize + wallThickness) / 2; }
 
-    public void resetMaze() {
+    public void resetMaze(boolean placeSprites) {
         mazeLevel++;
         rows = 3 + mazeLevel * 6;
         cols = 3 + mazeLevel * 6;
@@ -41,8 +41,10 @@ public class Maze {
         generateMazeDFS(grid[0][0]);
 
         generateCoins((rows * cols) / 6);
-        placeShop();
-        placeExit();
+        if (placeSprites) {
+            placeShop();
+            placeExit();
+        }
     }
 
     private void initGrid() {
