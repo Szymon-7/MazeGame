@@ -27,6 +27,9 @@ This automatically:
 Compile only:  
 `mvn compile`
 
+Run Tests:  
+`mvn test`
+
 Clean build files:  
 `mvn clean`
 
