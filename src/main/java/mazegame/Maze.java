@@ -55,26 +55,46 @@ public class Maze {
         }
     }
 
-    private void generateMazeDFS(Cell cell) {
-        cell.visited = true;
+    private void generateMazeDFS(Cell startCell) {
+        // ArrayDeque for stack, more performant and flexible
+        Deque<Cell> stack = new ArrayDeque<>();
 
-        for (Cell neighbor : getShuffledNeighbors(cell)) {
-            if (!neighbor.visited) {
-                removeWall(cell, neighbor);
-                generateMazeDFS(neighbor);
+        startCell.visited = true;
+        stack.push(startCell);
+
+        while (!stack.isEmpty()) {
+            Cell current = stack.peek();
+            List<Cell> neighbors = getUnvisitedNeighbors(current);
+
+            if (!neighbors.isEmpty()) {
+                // Pick one random unvisited neighbor
+                Cell next = neighbors.get(random.nextInt(neighbors.size()));
+
+                removeWall(current, next);
+                next.visited = true;
+
+                // Push to stack to continue exploring from this new cell
+                stack.push(next);
+            } else {
+                // Dead end found, backtrack by popping
+                stack.pop();
             }
         }
     }
 
-    private List<Cell> getShuffledNeighbors(Cell cell) {
+    private List<Cell> getUnvisitedNeighbors(Cell cell) {
         List<Cell> neighbors = new ArrayList<>();
 
-        if (cell.row > 0) neighbors.add(grid[cell.row - 1][cell.col]);            // Above neighbor
-        if (cell.row < rows - 1) neighbors.add(grid[cell.row + 1][cell.col]);     // Below neighbor
-        if (cell.col > 0) neighbors.add(grid[cell.row][cell.col - 1]);            // Left neighbor
-        if (cell.col < cols - 1) neighbors.add(grid[cell.row][cell.col + 1]);     // Right neighbor
+        // Check bounds and visited status for all 4 directions
+        if (cell.row > 0 && !grid[cell.row - 1][cell.col].visited) 
+        neighbors.add(grid[cell.row - 1][cell.col]);
+        if (cell.row < rows - 1 && !grid[cell.row + 1][cell.col].visited) 
+        neighbors.add(grid[cell.row + 1][cell.col]);
+        if (cell.col > 0 && !grid[cell.row][cell.col - 1].visited) 
+        neighbors.add(grid[cell.row][cell.col - 1]);
+        if (cell.col < cols - 1 && !grid[cell.row][cell.col + 1].visited) 
+        neighbors.add(grid[cell.row][cell.col + 1]);
 
-        Collections.shuffle(neighbors);
         return neighbors;
     }
 

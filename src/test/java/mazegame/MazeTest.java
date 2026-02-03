@@ -46,24 +46,22 @@ public class MazeTest {
     @Test
     void fiftyMazeSize() {
         Maze m = new Maze();
-        for (int i = 0; i < 25; i++)
+        for (int i = 0; i < 50; i++)
             m.resetMaze(false);
 
-        assertEquals(147, m.getRows());
-        assertEquals(147, m.getCols());
+        assertEquals(297, m.getRows());
+        assertEquals(297, m.getCols());
     }
 
+    @Test
+    void largeMazeSize() {
+        Maze m = new Maze();
+        for (int i = 0; i < 100; i++)
+            m.resetMaze(false);
 
-    // Crashing (stack overflow)
-    // @Test
-    // void largeMazeSize() {
-    //     Maze m = new Maze();
-    //     for (int i = 0; i < 100; i++)
-    //         m.resetMaze(false);
-    //
-    //     assertEquals(597, m.getRows());
-    //     assertEquals(597, m.getCols());
-    // }
+        assertEquals(597, m.getRows());
+        assertEquals(597, m.getCols());
+    }
 
     @Test
     void removeWallUp() {
