@@ -7,6 +7,7 @@ public class Maze {
     private int rows = 3;
     private int cols = 3;
     private Cell[][] grid;
+    private Cell[] neighborBuffer = new Cell[4];
 
     private int mazeLevel = -1;
     private int cellSize = 50;
@@ -40,11 +41,14 @@ public class Maze {
         initGrid();
         generateMazeDFS(grid[0][0]);
 
-        generateCoins((rows * cols) / 6);
+        // Sprites first while grid is empty
         if (placeSprites) {
             placeShop();
             placeExit();
         }
+
+        // Coins last to fill remaining 84% space
+        generateCoins((rows * cols) / 6);
     }
 
     private void initGrid() {
@@ -64,11 +68,11 @@ public class Maze {
 
         while (!stack.isEmpty()) {
             Cell current = stack.peek();
-            List<Cell> neighbors = getUnvisitedNeighbors(current);
+            int count = getUnvisitedNeighbors(current);
 
-            if (!neighbors.isEmpty()) {
+            if (count > 0) {
                 // Pick one random unvisited neighbor
-                Cell next = neighbors.get(random.nextInt(neighbors.size()));
+                Cell next = neighborBuffer[random.nextInt(count)]; 
 
                 removeWall(current, next);
                 next.visited = true;
@@ -82,20 +86,23 @@ public class Maze {
         }
     }
 
-    private List<Cell> getUnvisitedNeighbors(Cell cell) {
-        List<Cell> neighbors = new ArrayList<>();
+    private int getUnvisitedNeighbors(Cell cell) {
+        int count = 0;
 
-        // Check bounds and visited status for all 4 directions
-        if (cell.row > 0 && !grid[cell.row - 1][cell.col].visited) 
-        neighbors.add(grid[cell.row - 1][cell.col]);
-        if (cell.row < rows - 1 && !grid[cell.row + 1][cell.col].visited) 
-        neighbors.add(grid[cell.row + 1][cell.col]);
-        if (cell.col > 0 && !grid[cell.row][cell.col - 1].visited) 
-        neighbors.add(grid[cell.row][cell.col - 1]);
-        if (cell.col < cols - 1 && !grid[cell.row][cell.col + 1].visited) 
-        neighbors.add(grid[cell.row][cell.col + 1]);
+        // Check up
+        if (cell.row > 0 && !grid[cell.row - 1][cell.col].visited)
+        neighborBuffer[count++] = grid[cell.row - 1][cell.col];
+        // Check down
+        if (cell.row < rows - 1 && !grid[cell.row + 1][cell.col].visited)
+        neighborBuffer[count++] = grid[cell.row + 1][cell.col];
+        // Check left
+        if (cell.col > 0 && !grid[cell.row][cell.col - 1].visited)
+        neighborBuffer[count++] = grid[cell.row][cell.col - 1];
+        // Check right
+        if (cell.col < cols - 1 && !grid[cell.row][cell.col + 1].visited)
+        neighborBuffer[count++] = grid[cell.row][cell.col + 1];
 
-        return neighbors;
+        return count; // How many slots in neighborBuffer are valid
     }
 
     public void removeWall(Cell current, Cell next) {
@@ -114,27 +121,17 @@ public class Maze {
         }
     }
 
-    private void generateCoins(int maxCoins) {
-        int numOfCoins = random.nextInt(maxCoins + 1);    // Random num between 0 and max (coins)
-        int row, col;
-
-        for(int i = 0; i < numOfCoins; i++) {
-            do {
-                row = random.nextInt(rows);   // Random num between 0 and 14 (rows & cols)
-                col = random.nextInt(cols); 
-            } while (grid[row][col].hasCoin == true);   // No repeats/overlap
-
-            grid[row][col].hasCoin = true;
-        }
-    }
-
-    private void placeShop() {
-        int r, c;
-
-        do {
-            r = random.nextInt(rows);
-            c = random.nextInt(cols);
-        } while (grid[r][c].hasCoin); // avoid coin overlap
+    // The 3 functions below are BOGO but are actually more efficient than an O(n) Collections shuffle
+    // The max total coins in the maze are always (rows * cols / 6) ~ 16.67% of the cells, meaning the maze is 83.33% empty
+    // The average tries to find an empty spot per coin is 1/0.8333 ~ 1.2 in this case at the maximum
+    // The approximate complexity is therefore (0.1667 * 1.2) ~ 0.2N
+    // On average the O(0.2N) BOGO approach is actually 5x better than the shuffle approach all because the coins are capped to (rows * cols / 6)
+    // For example to place 100 coins it would take about 120 guesses VS. 600 shuffle operations
+    // Of course it is random so it is not 100% stable and could take much longer theoretically
+    private void placeShop() { 
+        // Grid is empty, first try
+        int r = random.nextInt(rows);
+        int c = random.nextInt(cols);
 
         shop = new Shop(r, c);
         grid[r][c].hasShop = true;
@@ -146,9 +143,23 @@ public class Maze {
         do {
             r = random.nextInt(rows);
             c = random.nextInt(cols);
-        } while (grid[r][c].hasCoin || grid[r][c].hasShop);
+        } while (grid[r][c].hasShop); // Avoid shop
 
         exit = new Exit(r, c);
         grid[r][c].hasExit = true;
+    }
+
+    private void generateCoins(int maxCoins) {
+        int numOfCoins = random.nextInt(maxCoins + 1);    // Random num between 0 and max (coins)
+        int row, col;
+
+        for(int i = 0; i < numOfCoins; i++) {
+            do {
+                row = random.nextInt(rows);   // Random num between rows & cols
+                col = random.nextInt(cols);
+            } while (grid[row][col].hasCoin || grid[row][col].hasShop || grid[row][col].hasExit);
+
+            grid[row][col].hasCoin = true;
+        }
     }
 }
