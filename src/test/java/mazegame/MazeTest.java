@@ -3,6 +3,8 @@ package mazegame;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Random;
+
 public class MazeTest {
     @Test
     void starterMazeSize() {
@@ -97,5 +99,22 @@ public class MazeTest {
         m.removeWall(m.getGrid()[1][1], m.getGrid()[1][2]);
         assertFalse(m.getGrid()[1][1].right);
         assertFalse(m.getGrid()[1][2].left);
+    }
+
+    @Test
+    void checkMazeCoins() {
+        Maze m = new Maze();
+        m.setRandomSeed(new Random(1)); 
+        m.resetMaze(false);
+        boolean hasCoin = false;
+
+        for (int r = 0; r < m.getRows(); r++) {
+            for (int c = 0; c < m.getCols(); c++) {
+                if (m.getGrid()[r][c].hasCoin) {
+                    hasCoin = true;
+                }
+            }
+        }
+        assertTrue(hasCoin);
     }
 }

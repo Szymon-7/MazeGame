@@ -18,6 +18,7 @@ public class Maze {
     private Exit exit;
 
     private Random random = new Random();
+    public void setRandomSeed(Random r) { random = r; }
 
     public Maze() {}
 
