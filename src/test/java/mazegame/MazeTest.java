@@ -102,7 +102,7 @@ public class MazeTest {
     }
 
     @Test
-    void checkMazeCoins() {
+    void checkStartMazeCoins() {
         Maze m = new Maze();
         m.setRandomSeed(new Random(1)); 
         m.resetMaze(false);
@@ -116,5 +116,62 @@ public class MazeTest {
             }
         }
         assertTrue(hasCoin);
+    }
+
+    @Test
+    void checkSecondMazeCoins() {
+        Maze m = new Maze();
+        m.setRandomSeed(new Random(1));
+        for (int i = 0; i < 2; i++) {
+            m.resetMaze(false);
+        }
+
+        int coinsNum = 0;
+        for (int r = 0; r < m.getRows(); r++) {
+            for (int c = 0; c < m.getCols(); c++) {
+                if (m.getGrid()[r][c].hasCoin) {
+                    coinsNum++;
+                }
+            }
+        }
+        assertEquals(coinsNum, 4); // From seed always true
+    }
+
+    @Test
+    void checkThirdMazeCoins() {
+        Maze m = new Maze();
+        m.setRandomSeed(new Random(1));
+        for (int i = 0; i < 3; i++) {
+            m.resetMaze(false);
+        }
+
+        int coinsNum = 0;
+        for (int r = 0; r < m.getRows(); r++) {
+            for (int c = 0; c < m.getCols(); c++) {
+                if (m.getGrid()[r][c].hasCoin) {
+                    coinsNum++;
+                }
+            }
+        }
+        assertEquals(coinsNum, 21); // From seed always true
+    }
+
+    @Test
+    void checkLargeMazeCoins() {
+        Maze m = new Maze();
+        m.setRandomSeed(new Random(1));
+        for (int i = 0; i < 100; i++) {
+            m.resetMaze(false);
+        }
+
+        int coinsNum = 0;
+        for (int r = 0; r < m.getRows(); r++) {
+            for (int c = 0; c < m.getCols(); c++) {
+                if (m.getGrid()[r][c].hasCoin) {
+                    coinsNum++;
+                }
+            }
+        }
+        assertEquals(coinsNum, 53813); // From seed always true
     }
 }
