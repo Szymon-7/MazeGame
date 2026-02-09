@@ -30,7 +30,7 @@ public class Maze {
     public int getWallThickness() { return wallThickness; }
     public Shop getShop() { return shop; }
     public Exit getExit() { return exit; }
-    public double getCenter() { return (rows * cellSize + wallThickness) / 2; }
+    public double getCenter() { return ((double)rows * cellSize + wallThickness) / 2; }
 
     public void resetMaze(boolean placeSprites) {
         mazeLevel++;
