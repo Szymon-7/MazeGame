@@ -54,7 +54,7 @@ public class CollisionTest {
     }
 
     @Test
-    void wallBlocksPlayer() {
+    void wallBlocksPlayerUp() {
         Maze m = new Maze();
         Player p = new Player(false);
         CollisionSystem cs = new CollisionSystem(m, p, null);
@@ -66,7 +66,58 @@ public class CollisionTest {
         m.getGrid()[1][1].left = true;
         m.getGrid()[1][1].right = true;
 
-        assertTrue(cs.canMove(0, -13.5));
-        assertFalse(cs.canMove(0, -13.6));
+        assertTrue(cs.canMove(0, -12.5));
+        assertFalse(cs.canMove(0, -12.6));
+    }
+
+    @Test
+    void wallBlocksPlayerDown() {
+        Maze m = new Maze();
+        Player p = new Player(false);
+        CollisionSystem cs = new CollisionSystem(m, p, null);
+        m.resetMaze(false);
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.setY(m.getCenter() - p.getSize() / 2);
+        m.getGrid()[1][1].top = true;
+        m.getGrid()[1][1].bottom = true;
+        m.getGrid()[1][1].left = true;
+        m.getGrid()[1][1].right = true;
+
+        assertTrue(cs.canMove(0, 12.5));
+        assertFalse(cs.canMove(0, 12.6));
+    }
+
+    @Test
+    void wallBlocksPlayerLeft() {
+        Maze m = new Maze();
+        Player p = new Player(false);
+        CollisionSystem cs = new CollisionSystem(m, p, null);
+        m.resetMaze(false);
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.setY(m.getCenter() - p.getSize() / 2);
+        m.getGrid()[1][1].top = true;
+        m.getGrid()[1][1].bottom = true;
+        m.getGrid()[1][1].left = true;
+        m.getGrid()[1][1].right = true;
+
+        assertTrue(cs.canMove(-12.5, 0));
+        assertFalse(cs.canMove(-12.6, 0));
+    }
+
+    @Test
+    void wallBlocksPlayerRight() {
+        Maze m = new Maze();
+        Player p = new Player(false);
+        CollisionSystem cs = new CollisionSystem(m, p, null);
+        m.resetMaze(false);
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.setY(m.getCenter() - p.getSize() / 2);
+        m.getGrid()[1][1].top = true;
+        m.getGrid()[1][1].bottom = true;
+        m.getGrid()[1][1].left = true;
+        m.getGrid()[1][1].right = true;
+
+        assertTrue(cs.canMove(12.5, 0));
+        assertFalse(cs.canMove(12.6, 0));
     }
 }

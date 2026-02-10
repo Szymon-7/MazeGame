@@ -49,14 +49,15 @@ public class CollisionSystem {
 
     private boolean checkWallCollision(Cell cell, double top, double bottom, double left, double right,
                                        double cellTop, double cellBottom, double cellLeft, double cellRight) {
+        double thickness = (double)maze.getWallThickness() / 2;
 
-        if (cell.top && top < cellTop + maze.getWallThickness() - 1 && bottom > cellTop)
+        if (cell.top && top < (cellTop + thickness) && bottom > (cellTop - thickness))
             return true;
-        if (cell.bottom && bottom > cellBottom && top < cellBottom)
+        if (cell.bottom && bottom > (cellBottom - thickness) && top < (cellBottom + thickness))
             return true;
-        if (cell.left && left < cellLeft + maze.getWallThickness() - 1 && right > cellLeft)
+        if (cell.left && left < (cellLeft + thickness) && right > (cellLeft - thickness))
             return true;
-        if (cell.right && right > cellRight && left < cellRight)
+        if (cell.right && right > (cellRight - thickness) && left < (cellRight + thickness))
             return true;
 
         return false;
@@ -72,7 +73,8 @@ public class CollisionSystem {
             boolean leftWall = leftCell.right;
             boolean cornerWall = corner.bottom || corner.right;
 
-            boolean touchingCorner = top < (row * cellSize) + maze.getWallThickness() - 1 && left < (col * cellSize) + maze.getWallThickness() - 1;
+            double thickness = (double)maze.getWallThickness() / 2;
+            boolean touchingCorner = top < (row * cellSize) + thickness && left < (col * cellSize) + thickness; 
 
             return (topWall && leftWall || cornerWall) && touchingCorner;
         }

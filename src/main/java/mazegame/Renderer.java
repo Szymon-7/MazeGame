@@ -53,7 +53,7 @@ public class Renderer {
 
         gc.restore();
 
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50 + (player.getLanternLevel() * 25));
+        // drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50 + (player.getLanternLevel() * 25));
         drawUI();
     }
 
@@ -64,8 +64,8 @@ public class Renderer {
         for(int row = 0; row < maze.getRows(); row++) {
             for(int col = 0; col < maze.getCols(); col++) {
                 Cell cell = maze.getGrid()[row][col];
-                double x = col * maze.getCellSize() + maze.getWallThickness() / 2 + offsetX;
-                double y = row * maze.getCellSize() + maze.getWallThickness() / 2 + offsetY;
+                double x = col * maze.getCellSize() + offsetX;
+                double y = row * maze.getCellSize() + offsetY;
 
                 // Dark gray
                 gc.setStroke(Color.rgb(20, 20, 20));
@@ -83,15 +83,15 @@ public class Renderer {
         }
 
         if (maze.getShop() != null) {
-            double x = maze.getShop().col * maze.getCellSize() + maze.getWallThickness() / 2 + offsetX;
-            double y = maze.getShop().row * maze.getCellSize() + maze.getWallThickness() / 2 + offsetY;
+            double x = maze.getShop().col * maze.getCellSize() + offsetX;
+            double y = maze.getShop().row * maze.getCellSize() + offsetY;
 
             maze.getShop().draw(gc, x, y, maze.getCellSize());
         }
 
         if (maze.getExit() != null) {
-            double x = maze.getExit().col * maze.getCellSize() + maze.getWallThickness() / 2 + offsetX;
-            double y = maze.getExit().row * maze.getCellSize() + maze.getWallThickness() / 2 + offsetY;
+            double x = maze.getExit().col * maze.getCellSize() + offsetX;
+            double y = maze.getExit().row * maze.getCellSize() + offsetY;
 
             maze.getExit().draw(gc, x, y, maze.getCellSize());
         }
@@ -103,8 +103,8 @@ public class Renderer {
 
         for(int row = 0; row < maze.getRows(); row += cellsHigh) {
             for(int col = 0; col < maze.getCols(); col += cellsWide) {
-                double x = col * maze.getCellSize() + maze.getWallThickness() / 2 + offsetX;
-                double y = row * maze.getCellSize() + maze.getWallThickness() / 2 + offsetY;
+                double x = col * maze.getCellSize() + offsetX;
+                double y = row * maze.getCellSize() + offsetY;
 
                 // Casting to int fixes separation lines in the floor
                 gc.drawImage(floorTexture, (int)x, (int)y, (int)tileWidth, (int)tileHeight);
