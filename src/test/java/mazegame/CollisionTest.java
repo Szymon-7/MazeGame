@@ -120,4 +120,19 @@ public class CollisionTest {
         assertTrue(cs.canMove(12.5, 0));
         assertFalse(cs.canMove(12.6, 0));
     }
+
+    @Test
+    void playerCoinCollision() {
+        Maze m = new Maze();
+        Player p = new Player(false);
+        CollisionSystem cs = new CollisionSystem(m, p, null);
+        m.resetMaze(false);
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.setY(m.getCenter() - p.getSize() / 2);
+
+        assertEquals(p.getCoins(), 0);
+        m.getGrid()[1][1].hasCoin = true;
+        cs.checkCoinCollisions();
+        assertEquals(p.getCoins(), 1);
+    }
 }

@@ -104,7 +104,8 @@ public class CollisionSystem {
                 if (collision) {
                     cell.hasCoin = false;
                     player.addCoins(1);
-                    audio.playCoinPickup();
+                    if (audio != null)
+                        audio.playCoinPickup();
                 }
             }
         }
