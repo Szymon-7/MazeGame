@@ -9,10 +9,14 @@ public class Shop {
     public final int col;
     public final Image shopSprite;
 
-    public Shop(int row, int col) {
+    public Shop(int row, int col, boolean loadSprites) {
         this.row = row;
         this.col = col;
-        this.shopSprite = new Image(getClass().getResource("/sprites/shop.png").toExternalForm());
+        if (loadSprites) {
+            this.shopSprite = new Image(getClass().getResource("/sprites/shop.png").toExternalForm());
+        } else {
+            this.shopSprite = null;
+        }
     }
 
     public void draw(GraphicsContext gc, double x, double y, int cellSize) {

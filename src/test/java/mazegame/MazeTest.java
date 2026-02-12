@@ -134,7 +134,7 @@ public class MazeTest {
                 }
             }
         }
-        assertEquals(coinsNum, 4); // From seed always true
+        assertEquals(coinsNum, 12); // From seed always true
     }
 
     @Test
@@ -153,7 +153,7 @@ public class MazeTest {
                 }
             }
         }
-        assertEquals(coinsNum, 21); // From seed always true
+        assertEquals(coinsNum, 31); // From seed always true
     }
 
     @Test
@@ -172,6 +172,6 @@ public class MazeTest {
                 }
             }
         }
-        assertEquals(coinsNum, 53813); // From seed always true
+        assertEquals(coinsNum, 14255); // From seed always true
     }
 }

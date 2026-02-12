@@ -32,7 +32,7 @@ public class Maze {
     public Exit getExit() { return exit; }
     public double getCenter() { return ((double)rows * cellSize) / 2; }
 
-    public void resetMaze(boolean placeSprites) {
+    public void resetMaze(boolean loadSprites) {
         mazeLevel++;
         rows = 3 + mazeLevel * 6;
         cols = 3 + mazeLevel * 6;
@@ -42,11 +42,8 @@ public class Maze {
         initGrid();
         generateMazeDFS(grid[0][0]);
 
-        // Sprites first while grid is empty
-        if (placeSprites) {
-            placeShop();
-            placeExit();
-        }
+        placeShop(loadSprites);
+        placeExit(loadSprites);
 
         // Coins last to fill remaining 84% space
         generateCoins((rows * cols) / 6);
@@ -129,16 +126,16 @@ public class Maze {
     // On average the O(0.2N) BOGO approach is actually 5x better than the shuffle approach all because the coins are capped to (rows * cols / 6)
     // For example to place 100 coins it would take about 120 guesses VS. 600 shuffle operations
     // Of course it is random so it is not 100% stable and could take much longer theoretically
-    private void placeShop() { 
+    private void placeShop(boolean loadSprites) { 
         // Grid is empty, first try
         int r = random.nextInt(rows);
         int c = random.nextInt(cols);
 
-        shop = new Shop(r, c);
+        shop = new Shop(r, c, loadSprites);
         grid[r][c].hasShop = true;
     }
 
-    private void placeExit() {
+    private void placeExit(boolean loadSprites) {
         int r, c;
 
         do {
@@ -146,7 +143,7 @@ public class Maze {
             c = random.nextInt(cols);
         } while (grid[r][c].hasShop); // Avoid shop
 
-        exit = new Exit(r, c);
+        exit = new Exit(r, c, loadSprites);
         grid[r][c].hasExit = true;
     }
 

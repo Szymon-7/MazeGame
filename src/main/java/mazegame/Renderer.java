@@ -15,7 +15,7 @@ public class Renderer {
     private final GraphicsContext gc;
     private final Canvas canvas;
     private final Maze maze;
-    private final Player player;
+    private final Player player; // Shop generates at 1,1 in this seed
     private final Image floorTexture;
     private final Coin coin;
 
@@ -53,7 +53,7 @@ public class Renderer {
 
         gc.restore();
 
-        // drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50 + (player.getLanternLevel() * 25));
+        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50 + (player.getLanternLevel() * 25));
         drawUI();
     }
 

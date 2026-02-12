@@ -3,6 +3,8 @@ package mazegame;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Random;
+
 public class CollisionTest {
 
     @Test
@@ -134,5 +136,19 @@ public class CollisionTest {
         m.getGrid()[1][1].hasCoin = true;
         cs.checkCoinCollisions();
         assertEquals(p.getCoins(), 1);
+    }
+
+    @Test
+    void playerShopCollision() {
+        Maze m = new Maze();
+        Player p = new Player(false);
+        m.setRandomSeed(new Random(1));
+        CollisionSystem cs = new CollisionSystem(m, p, null);
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.setY(m.getCenter() - p.getSize() / 2);
+
+        assertFalse(cs.isPlayerOnShop());
+        m.resetMaze(false); // Shop generates at 1,1 in this seed
+        assertTrue(cs.isPlayerOnShop());
     }
 }

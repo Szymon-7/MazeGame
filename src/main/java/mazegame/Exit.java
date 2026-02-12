@@ -15,10 +15,15 @@ public class Exit {
     private final double FRAME_DURATION = 0.2;
     private final int FRAME_COUNT = 4;
 
-    public Exit(int row, int col) {
+    public Exit(int row, int col, boolean loadSprites) {
         this.row = row;
         this.col = col;
-        this.exitSprite = new Image(getClass().getResource("/sprites/hatch.png").toExternalForm());
+        if (loadSprites) {
+            this.exitSprite = new Image(getClass().getResource("/sprites/hatch.png").toExternalForm());
+        }
+        else {
+            this.exitSprite = null;
+        }
     }
 
     public void draw(GraphicsContext gc, double x, double y, int cellSize) {
