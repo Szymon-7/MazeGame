@@ -151,4 +151,18 @@ public class CollisionTest {
         m.resetMaze(false); // Shop generates at 1,1 in this seed
         assertTrue(cs.isPlayerOnShop());
     }
+
+    @Test
+    void playerExitCollision() {
+        Maze m = new Maze();
+        Player p = new Player(false);
+        m.setRandomSeed(new Random(1));
+        CollisionSystem cs = new CollisionSystem(m, p, null);
+        p.setX(m.getCenter() - m.getCellSize() - p.getSize() / 2); // Middle of cell 0,1
+        p.setY(m.getCenter() - p.getSize() / 2);
+
+        assertFalse(cs.isPlayerOnExit());
+        m.resetMaze(false); // Exit generates at 0,1 in this seed
+        assertTrue(cs.isPlayerOnExit());
+    }
 }
