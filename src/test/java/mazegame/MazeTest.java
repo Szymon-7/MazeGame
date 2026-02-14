@@ -174,4 +174,31 @@ public class MazeTest {
         }
         assertEquals(coinsNum, 14255); // From seed always true
     }
+
+    @Test
+    void validShopAndExitLargeMaze() {
+        Maze m = new Maze();
+        for (int i = 0; i < 100; i++) {
+            m.resetMaze(false);
+        }
+
+        boolean shop = false, exit = false;
+        int r = 0, c = 0;
+        Cell grid[][] = m.getGrid();
+
+        outer:
+        for (r = 0; r < m.getRows(); r++) {
+            for (c = 0; c < m.getCols(); c++) {
+                if (shop && exit)
+                    break outer;
+                else if (grid[r][c].hasShop)
+                    shop = true;
+                else if (grid[r][c].hasExit)
+                    exit = true;
+            }
+        }
+
+        assertTrue(shop);
+        assertTrue(exit);
+    }
 }
