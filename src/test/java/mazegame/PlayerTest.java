@@ -142,4 +142,16 @@ public class PlayerTest {
         assertTrue(p.addPickaxe());
         assertFalse(p.addPickaxe());
     }
+
+    @Test
+    void playerKeepsCoinsOnMazeReset() {
+        Maze m = new Maze();
+        Player p = new Player(false);
+        m.resetMaze(false);
+        assertEquals(p.getCoins(), 0);
+        p.addCoins(5);
+        assertEquals(p.getCoins(), 5);
+        m.resetMaze(false);
+        assertEquals(p.getCoins(), 5);
+    }
 }
