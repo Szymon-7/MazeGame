@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Maze {
 
+    public static Maze instance;
     private int rows = 3;
     private int cols = 3;
     private Cell[][] grid;
@@ -20,7 +21,10 @@ public class Maze {
     private Random random = new Random();
     public void setRandomSeed(Random r) { random = r; }
 
-    public Maze() {}
+    public Maze() {
+        instance = this;
+    }
+
 
     public int getRows() { return rows; }
     public int getCols() { return cols; }

@@ -50,6 +50,22 @@ public class PlayerTest {
     }
 
     @Test
+    void playerCoordinatesClamp() {
+        Player p = new Player(false);
+        Maze m = new Maze();
+        m.resetMaze(false);
+
+        p.setX(10);
+        p.setY(20);
+        assertEquals(p.getX(), 10);
+        assertEquals(p.getY(), 20);
+        p.setX(-10);
+        p.setY(-20);
+        assertEquals(p.getX(), 10);
+        assertEquals(p.getY(), 20);
+    }
+
+    @Test
     void addCoinsSingle() {
         Player p = new Player(false);
 

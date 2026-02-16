@@ -30,6 +30,8 @@ public class Player {
 
     private boolean footstep = false;
 
+    private Maze maze = Maze.instance;
+
     public Player(boolean loadSprites) {
         if (loadSprites) {
             this.upSprite = loadImage("/sprites/character/moveUp.png");
@@ -47,8 +49,18 @@ public class Player {
 
     public double getX() { return x; }
     public double getY() { return y; }
-    public void setX(double x) { this.x = x; }
-    public void setY(double y) { this.y = y; }
+    public void setX(double x) {
+        double worldWidth = maze.getCols() * maze.getCellSize();
+        if (x < 0 || x > worldWidth - size)
+            return;
+        this.x = x;
+    }
+    public void setY(double y) {
+        double worldHeight = maze.getRows() * maze.getCellSize();
+        if (y < 0 || y > worldHeight - size)
+            return;
+        this.y = y;
+    }
 
     public int getSize() { return size; }
     public double getSpeed() { return speed; }
@@ -85,22 +97,22 @@ public class Player {
     }
 
     public void moveUp(double distance) {
-        y -= distance;
+        setY(y - distance);
         currentSprite = upSprite;
     }
 
     public void moveDown(double distance) {
-        y += distance;
+        setY(y + distance);
         currentSprite = downSprite;
     }
 
     public void moveLeft(double distance) {
-        x -= distance;
+        setX(x - distance);
         currentSprite = leftSprite;
     }
 
     public void moveRight(double distance) {
-        x += distance;
+        setX(x + distance);
         currentSprite = rightSprite;
     }
 
