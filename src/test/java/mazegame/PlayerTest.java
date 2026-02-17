@@ -7,7 +7,9 @@ public class PlayerTest {
 
     @Test
     void playerMovesUp() {
+        Maze m = new Maze();
         Player p = new Player(false);
+        m.resetMaze(false);
 
         p.setX(10);
         p.setY(10);
@@ -18,7 +20,9 @@ public class PlayerTest {
 
     @Test
     void playerMovesDown() {
+        Maze m = new Maze();
         Player p = new Player(false);
+        m.resetMaze(false);
 
         p.setX(10);
         p.setY(10);
@@ -29,7 +33,9 @@ public class PlayerTest {
 
     @Test
     void playerMovesLeft() {
+        Maze m = new Maze();
         Player p = new Player(false);
+        m.resetMaze(false);
 
         p.setX(10);
         p.setY(10);
@@ -40,7 +46,9 @@ public class PlayerTest {
 
     @Test
     void playerMovesRight() {
+        Maze m = new Maze();
         Player p = new Player(false);
+        m.resetMaze(false);
 
         p.setX(10);
         p.setY(10);
