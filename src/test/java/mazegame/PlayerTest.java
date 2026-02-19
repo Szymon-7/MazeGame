@@ -71,6 +71,10 @@ public class PlayerTest {
         p.setY(-20);
         assertEquals(p.getX(), 10);
         assertEquals(p.getY(), 20);
+        p.setX(10000);
+        p.setY(10000);
+        assertEquals(p.getX(), 10);
+        assertEquals(p.getY(), 20);
     }
 
     @Test
