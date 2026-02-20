@@ -78,6 +78,78 @@ public class PlayerTest {
     }
 
     @Test
+    void playerMovesClamp() {
+        Player p = new Player(false);
+        Maze m = new Maze();
+        m.resetMaze(false);
+
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.setY(m.getCenter() - p.getSize() / 2);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+
+        p.moveUp(10000);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+        p.moveUp(-10000);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+
+        p.moveDown(10000);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+        p.moveDown(-10000);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+
+        p.moveLeft(10000);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+        p.moveLeft(-10000);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+
+        p.moveUp(10000);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+        p.moveUp(-10000);
+        assertEquals(p.getX(), 65);
+        assertEquals(p.getY(), 65);
+    }
+
+    @Test
+    void playerMovesClampEdge() {
+        Player p = new Player(false);
+        Maze m = new Maze();
+        m.resetMaze(false);
+
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.setY(m.getCenter() - p.getSize() / 2);
+        p.moveLeft(65.1);
+        assertEquals(p.getX(), 65);
+        p.moveLeft(65);
+        assertEquals(p.getX(), 0);
+
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.moveRight(65.1);
+        assertEquals(p.getX(), 65);
+        p.moveRight(65);
+        assertEquals(p.getX(), 130);
+
+        p.setX(m.getCenter() - p.getSize() / 2);
+        p.moveUp(65.1);
+        assertEquals(p.getY(), 65);
+        p.moveUp(65);
+        assertEquals(p.getY(), 0);
+
+        p.setY(m.getCenter() - p.getSize() / 2);
+        p.moveDown(65.1);
+        assertEquals(p.getY(), 65);
+        p.moveDown(65);
+        assertEquals(p.getY(), 130);
+    }
+
+    @Test
     void addCoinsSingle() {
         Player p = new Player(false);
 
