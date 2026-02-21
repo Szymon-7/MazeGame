@@ -66,7 +66,7 @@ public class Player {
     public double getSpeed() { return speed; }
 
     public int getCoins() { return coins; }
-    public void addCoins(int num) { coins += num; }
+    public void addCoins(int num) { coins = Math.max(0, coins + num); }
 
     public int getLanternLevel() { return lanternLevel; }
     public void upgradeLantern() { lanternLevel++; }

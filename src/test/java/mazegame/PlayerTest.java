@@ -199,6 +199,14 @@ public class PlayerTest {
     }
 
     @Test
+    void coinsDoNotGoNegative() {
+        Player p = new Player(false);
+        p.addCoins(5);
+        p.addCoins(-10);
+        assertEquals(p.getCoins(), 0);  // not negative
+    }
+
+    @Test
     void addPickaxeRespectsBagLimit() {
         Player p = new Player(false);
 
