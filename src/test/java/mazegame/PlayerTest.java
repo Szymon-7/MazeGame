@@ -215,6 +215,26 @@ public class PlayerTest {
     }
 
     @Test
+    void pickaxeWallFailsWithZeroPickaxes() {
+        Maze m = new Maze();
+        m.resetMaze(false);
+        Player p = new Player(false);
+
+        assertEquals(0, p.getPickaxes());
+
+        p.setX(5);
+        p.setY(5);
+        Cell[][] grid = m.getGrid();
+        grid[0][0].top = true;
+
+        p.moveUp(0);
+        p.pickaxeWall(m, null);
+
+        assertTrue(grid[0][0].top);
+        assertEquals(0, p.getPickaxes());
+    }
+
+    @Test
     void upgradeLanternCorrectly() {
         Player p = new Player(false);
 
