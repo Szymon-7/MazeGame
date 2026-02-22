@@ -168,26 +168,30 @@ public class Player {
         Cell[][] grid = maze.getGrid();
         Cell current = grid[row][col];
 
+        boolean wallBreaks = false;
+
         // Sprite facing direction with 2 edge cases (if actually in bounds & if wall is actually there)
         if (currentSprite == upSprite && row > 0 && current.top) {
             maze.removeWall(current, grid[row - 1][col]);
-            pickaxes--;
-            audio.playWallBreak();
+            wallBreaks = true;
         }
         else if (currentSprite == downSprite && row < (maze.getRows() - 1) && current.bottom) {
             maze.removeWall(current, grid[row + 1][col]);
-            pickaxes--;
-            audio.playWallBreak();
+            wallBreaks = true;
         }
         else if (currentSprite == leftSprite && col > 0 && current.left) {
             maze.removeWall(current, grid[row][col - 1]);
-            pickaxes--;
-            audio.playWallBreak();
+            wallBreaks = true;
         }
         else if (currentSprite == rightSprite && col < maze.getCols() - 1 && current.right) {
             maze.removeWall(current, grid[row][col + 1]);
+            wallBreaks = true;
+        }
+
+        // behaviour dependent on flag, and audio null check
+        if (wallBreaks) {
             pickaxes--;
-            audio.playWallBreak();
+            if (audio != null) audio.playWallBreak();
         }
     }
 }

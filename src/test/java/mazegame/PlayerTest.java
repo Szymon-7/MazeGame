@@ -215,6 +215,27 @@ public class PlayerTest {
     }
 
     @Test
+    void pickaxeWallSuccess() {
+        Maze m = new Maze();
+        m.resetMaze(false);
+        Player p = new Player(false);
+        p.addPickaxe();
+
+        assertEquals(1, p.getPickaxes());
+
+        p.setX(5);
+        p.setY(5);
+        Cell[][] grid = m.getGrid();
+        grid[0][0].right = true;
+
+        p.moveRight(0);
+        p.pickaxeWall(m, null);
+
+        assertFalse(grid[0][0].right);
+        assertEquals(0, p.getPickaxes());
+    }
+
+    @Test
     void pickaxeWallFailsWithZeroPickaxes() {
         Maze m = new Maze();
         m.resetMaze(false);
