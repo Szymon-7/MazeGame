@@ -1,6 +1,6 @@
 module mazegame {
-    requires javafx.controls;
-    requires javafx.graphics;
+    requires transitive javafx.controls;
+    requires transitive javafx.graphics;
     requires javafx.media;
 
     exports mazegame;
