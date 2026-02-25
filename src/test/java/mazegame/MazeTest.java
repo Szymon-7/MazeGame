@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Random;
+import java.util.Queue;
+import java.util.ArrayDeque;
+import java.util.Set;
+import java.util.HashSet;
 
 public class MazeTest {
     @Test
@@ -200,5 +204,80 @@ public class MazeTest {
 
         assertTrue(shop);
         assertTrue(exit);
+    }
+
+    @Test
+    void mazeIsAlwaysSolvable() {
+        Maze m = new Maze();
+        for (int i = 0; i < 10; i++) {
+            m.resetMaze(false);
+            
+            int startRow = m.getRows() / 2;
+            int startCol = m.getCols() / 2;
+            Cell start = m.getGrid()[startRow][startCol];
+            Exit exit = m.getExit();
+            
+            assertTrue(isPathAvailable(m, start, exit.row, exit.col), "Maze level " + m.getMazeLevel() + " is unsolvable.");
+        }
+    }
+
+    @Test
+    void shopIsAlwaysReachable() {
+        Maze m = new Maze();
+        for (int i = 0; i < 10; i++) {
+            m.resetMaze(false);
+            
+            int startRow = m.getRows() / 2;
+            int startCol = m.getCols() / 2;
+            Cell start = m.getGrid()[startRow][startCol];
+            Shop shop = m.getShop();
+            
+            assertTrue(isPathAvailable(m, start, shop.row, shop.col), "Shop in maze level " + m.getMazeLevel() + " is unreachable.");
+        }
+    }
+
+    private boolean isPathAvailable(Maze m, Cell start, int targetRow, int targetCol) {
+        Queue<Cell> queue = new ArrayDeque<>();
+        Set<Cell> visited = new HashSet<>();
+        
+        queue.add(start);
+        visited.add(start);
+        
+        while (!queue.isEmpty()) {
+            Cell current = queue.poll();
+            if (current.row == targetRow && current.col == targetCol) 
+                return true;
+
+            // Check all 4 directions, respecting the maze's wall booleans
+            if (!current.top && current.row > 0) {
+                Cell next = m.getGrid()[current.row - 1][current.col];
+                if (!visited.contains(next)) {
+                    visited.add(next);
+                    queue.add(next);
+                }
+            }
+            if (!current.bottom && current.row < m.getRows() - 1) {
+                Cell next = m.getGrid()[current.row + 1][current.col];
+                if (!visited.contains(next)) {
+                    visited.add(next);
+                    queue.add(next);
+                }
+            }
+            if (!current.left && current.col > 0) {
+                Cell next = m.getGrid()[current.row][current.col - 1];
+                if (!visited.contains(next)) {
+                    visited.add(next);
+                    queue.add(next);
+                }
+            }
+            if (!current.right && current.col < m.getCols() - 1) {
+                Cell next = m.getGrid()[current.row][current.col + 1];
+                if (!visited.contains(next)) {
+                    visited.add(next);
+                    queue.add(next);
+                }
+            }
+        }
+        return false;
     }
 }
