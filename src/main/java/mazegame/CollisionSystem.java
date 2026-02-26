@@ -13,13 +13,17 @@ public class CollisionSystem {
     }
 
     public boolean canMove(double dx, double dy) {
-        double nextX = player.getX() + dx;
-        double nextY = player.getY() + dy;
+        return canMove(player.getX(), player.getY(), player.getSize(), dx, dy);
+    }
+
+    public boolean canMove(double x, double y, int size, double dx, double dy) {
+        double nextX = x + dx;
+        double nextY = y + dy;
 
         double left = nextX;
-        double right = nextX + player.getSize();
+        double right = nextX + size;
         double top = nextY;
-        double bottom = nextY + player.getSize();
+        double bottom = nextY + size;
 
         int minRow = (int)(top / maze.getCellSize());
         int maxRow = (int)((bottom - 0.001) / maze.getCellSize());
@@ -28,6 +32,9 @@ public class CollisionSystem {
 
         for (int row = minRow; row <= maxRow; row++) {
             for (int col = minCol; col <= maxCol; col++) {
+                if (row < 0 || row >= maze.getRows() || col < 0 || col >= maze.getCols())
+                    return false;
+                
                 Cell cell = maze.getGrid()[row][col];
 
                 double cellLeft = col * maze.getCellSize();

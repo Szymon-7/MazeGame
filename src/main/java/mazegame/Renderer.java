@@ -12,6 +12,7 @@ import javafx.scene.text.TextAlignment;
 
 public class Renderer {
 
+    private final Game game;
     private final GraphicsContext gc;
     private final Canvas canvas;
     private final Maze maze;
@@ -27,6 +28,7 @@ public class Renderer {
     private boolean canEnterShop;
 
     public Renderer(Game game) {
+        this.game = game;
         this.gc = game.getGc();
         this.canvas = game.getCanvas();
         this.maze = game.getMaze();
@@ -51,9 +53,13 @@ public class Renderer {
         drawWorld(offsetX, offsetY);
         player.render(gc, offsetX, offsetY);
 
+        for (Enemy enemy : game.getEnemies()) {
+            enemy.render(gc, offsetX, offsetY);
+        }
+
         gc.restore();
 
-        drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50 + (player.getLanternLevel() * 25));
+        // drawFog(gc, canvas.getWidth() / 2, canvas.getHeight() / 2, 50 + (player.getLanternLevel() * 25));
         drawUI();
     }
 

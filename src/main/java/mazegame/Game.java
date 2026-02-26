@@ -16,12 +16,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game extends Pane {
     private Canvas canvas;
     private GraphicsContext gc;
     private Maze maze;
     private Player player;
     private Coin coin;
+    private List<Enemy> enemies = new ArrayList<>();
     private Renderer renderer;
     private CollisionSystem collision;
     private AudioManager audio;
@@ -91,6 +95,7 @@ public class Game extends Pane {
     public Player getPlayer() { return player; }
     public Coin getCoin() { return coin; }
     public AudioManager getAudio() { return audio; }
+    public List<Enemy> getEnemies() { return enemies; }
     public boolean inShop() { return inShop; }
 
     public void setMoveUp(boolean value) { moveUp = value; }
@@ -269,11 +274,29 @@ public class Game extends Pane {
         player.moveDown(0); // Set sprite to down on reset
         mazeLevelLabel.setText(String.format("Maze %d", maze.getMazeLevel()));
 
+        spawnEnemies();
+
         inShop = false;
         canEnterShop = false;
         canExit = false;
 
         lastTime = 0;
+    }
+
+    private void spawnEnemies() {
+        enemies.clear();
+        int count = maze.getMazeLevel() + 1; // 1 enemy on lvl 0, 2 on lvl 1, etc.
+        
+        for (int i = 0; i < count; i++) {
+            // Find a random cell that isn't the center (where player starts)
+            int r, c;
+            do {
+                r = (int)(Math.random() * maze.getRows());
+                c = (int)(Math.random() * maze.getCols());
+            } while (r == maze.getRows()/2 && c == maze.getCols()/2);
+            
+            enemies.add(new Enemy(c * maze.getCellSize() + 10, r * maze.getCellSize() + 10));
+        }
     }
 
     public void toggleShop() {
@@ -337,6 +360,20 @@ public class Game extends Pane {
 
         player.updateAnimation(dt, isMoving);
         if (player.shouldMakeFootstep()) { audio.playFootstep(); }
+
+        for (Enemy enemy : enemies) {
+            enemy.update(dt, collision);
+            
+            // Check collision with player
+            double dx = player.getX() - enemy.getX();
+            double dy = player.getY() - enemy.getY();
+            double distanceSq = dx*dx + dy*dy;
+            double minDist = (player.getSize()/2.0 + enemy.getSize()/2.0);
+            
+            if (distanceSq < minDist * minDist) {
+                // Player hit, do nothing for now
+            }
+        }
 
         collision.checkCoinCollisions();
         coin.updateAnimation(dt);
