@@ -141,6 +141,22 @@ public class Renderer {
         gc.setTextAlign(TextAlignment.CENTER);
         gc.fillText("COINS: " + player.getCoins(), canvas.getWidth() / 2, canvas.getHeight() / 2 + 350);
 
+        // Health Bar
+        double barWidth = 150;
+        double barHeight = 15;
+        double barX = (canvas.getWidth() - barWidth) / 2.0;
+        double barY = canvas.getHeight() / 2 + 370;
+
+        gc.setFill(Color.BLACK);
+        gc.fillRoundRect(barX - 2, barY - 2, barWidth + 4, barHeight + 4, 10, 10);
+        
+        gc.setFill(Color.DARKGRAY);
+        gc.fillRoundRect(barX, barY, barWidth, barHeight, 8, 8);
+
+        double healthPercent = (double)player.getHealth() / player.getMaxHealth();
+        gc.setFill(Color.RED);
+        gc.fillRoundRect(barX, barY, barWidth * healthPercent, barHeight, 8, 8);
+
         if (canEnterShop && !inShop) {
             gc.setFill(Color.WHITE);
             gc.setFont(Font.font("Verdana", 16));

@@ -15,6 +15,12 @@ public class Player {
     private int pickaxes = 0;
     private int bagLevel = 1;
 
+    private int maxHealth = 3;
+    private int currentHealth = 3;
+    private double invincibilityTimer = 0;
+    private boolean isVisible = true;
+    private double blinkTimer = 0;
+
     private int currentFrame = 0;
     private int lastFrame = 0;
     private double frameTime = 0;
@@ -84,7 +90,33 @@ public class Player {
         else return false;
     }
 
+    public int getHealth() { return currentHealth; }
+    public int getMaxHealth() { return maxHealth; }
+    public boolean isInvincible() { return invincibilityTimer > 0; }
+    public void resetHealth() { 
+        currentHealth = maxHealth;
+        invincibilityTimer = 0;
+        isVisible = true;
+    }
+
+    public void takeDamage(int amount) {
+        if (invincibilityTimer <= 0) {
+            currentHealth -= amount;
+            invincibilityTimer = 2.0; // 2 seconds of invincibility
+        }
+    }
+
+    public void resetStats() {
+        coins = 0;
+        speedLevel = 1;
+        lanternLevel = 1;
+        pickaxes = 0;
+        bagLevel = 1;
+    }
+
     public void render(GraphicsContext gc, double offsetX, double offsetY) {
+        if (!isVisible) return; // Blinking effect
+        
         gc.drawImage(
             currentSprite,          // spritesheet for that direction
             currentFrame * 20, 0,   // top-left corner of the frame in the sheet
@@ -119,6 +151,17 @@ public class Player {
     public void updateAnimation(double dt, boolean isMoving) {
         footstep = false;
         frameTime += dt;
+
+        if (invincibilityTimer > 0) {
+            invincibilityTimer -= dt;
+            blinkTimer -= dt;
+            if (blinkTimer <= 0) {
+                isVisible = !isVisible;
+                blinkTimer = 0.1; // Toggle every 100ms
+            }
+        } else {
+            isVisible = true;
+        }
 
         if (isMoving) {
             if (currentFrame < 2) {

@@ -33,7 +33,9 @@ public class Game extends Pane {
     private boolean moveUp, moveDown, moveLeft, moveRight;
 
     private boolean paused = false;
+    private boolean isGameOver = false;
     private StackPane pauseOverlay;
+    private StackPane gameOverOverlay;
     private Label mazeLevelLabel;
     private double timePlayed = 0;
     private Label timerLabel;
@@ -72,6 +74,7 @@ public class Game extends Pane {
         getChildren().add(canvas);
         initShopUI();
         initPauseUI();
+        initGameOverUI();
 
         // Center the canvas within this Pane
         widthProperty().addListener((obs, oldW, newW) -> centerCanvas());
@@ -210,6 +213,59 @@ public class Game extends Pane {
         getChildren().add(pauseOverlay);
     }
 
+    private void initGameOverUI() {
+        Label title = new Label("GAME OVER");
+        title.getStyleClass().add("pause-title");
+
+        Label msg = new Label("You died in the depths...");
+        msg.getStyleClass().add("maze-level-label");
+
+        Button retryButton = new Button("Return to Level 0");
+        retryButton.getStyleClass().add("shop-button");
+        retryButton.setOnAction(e -> fullReset());
+
+        Button exitButton = new Button("Quit");
+        exitButton.getStyleClass().add("shop-button");
+        exitButton.setOnAction(e -> { javafx.application.Platform.exit(); });
+
+        VBox content = new VBox(30, title, msg, retryButton, exitButton);
+        content.setAlignment(Pos.CENTER);
+
+        gameOverOverlay = new StackPane(content);
+        gameOverOverlay.getStyleClass().add("shop-overlay");
+        gameOverOverlay.setVisible(false);
+
+        gameOverOverlay.prefWidthProperty().bind(widthProperty());
+        gameOverOverlay.prefHeightProperty().bind(heightProperty());
+
+        getChildren().add(gameOverOverlay);
+    }
+
+    public void fullReset() {
+        maze.resetLevel();
+        player.resetHealth();
+        player.resetStats();
+        
+        refreshShopUI();
+        
+        isGameOver = false;
+        gameOverOverlay.setVisible(false);
+        timePlayed = 0;
+        
+        reset();
+        
+        audio.playStart();
+        playStartFade();
+    }
+
+    private void refreshShopUI() {
+        coinsLabel.setText("Coins: " + player.getCoins());
+        buyLanternButton.setText("Lantern " + player.getLanternLevel() + " Upgrade (+Vision) - 5 Coins");
+        buySpeedButton.setText("Shoes " + player.getSpeedLevel() + " Upgrade (+Speed) - 5 Coins");
+        buyPickaxeButton.setText("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use) - 10 Coins");
+        buyBagButton.setText("Bag " + player.getBagLevel() + " Upgrade (Hold more pickaxes) - 10 Coins");
+    }
+
     private void updateTimer() {
         int minutes = (int)(timePlayed / 60);
         int seconds = (int)(timePlayed % 60);
@@ -258,7 +314,6 @@ public class Game extends Pane {
 
         if (canEnterShop) {
             toggleShop();
-            buyPickaxeButton.setText("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use)" + " - 10 Coins"); // Update pickaxe amount in shop
         }
     }
 
@@ -268,6 +323,7 @@ public class Game extends Pane {
 
         player.setX(maze.getCenter() - player.getSize() / 2);
         player.setY(maze.getCenter() - player.getSize() / 2);
+        player.resetHealth();
         moveUp = moveDown = moveLeft = moveRight = false;
         shopOverlay.setVisible(false);
 
@@ -305,6 +361,7 @@ public class Game extends Pane {
             shopOverlay.setVisible(false);
         }
         else if (canEnterShop) { 
+            refreshShopUI(); // Update UI before showing
             inShop = true;
             shopOverlay.setVisible(true);
         }
@@ -333,7 +390,7 @@ public class Game extends Pane {
 
     private void update(double dt) {
 
-        if (inShop || paused) return;
+        if (inShop || paused || isGameOver) return;
 
         double distance = (player.getSpeed() + player.getSpeedLevel() * 25) * dt;
         boolean isMoving = false;
@@ -371,7 +428,13 @@ public class Game extends Pane {
             double minDist = (player.getSize()/2.0 + enemy.getSize()/2.0);
             
             if (distanceSq < minDist * minDist) {
-                // Player hit, do nothing for now
+                // Player hit, take damage and check game over
+                player.takeDamage(1);
+                if (player.getHealth() <= 0) {
+                    isGameOver = true;
+                    gameOverOverlay.setVisible(true);
+                    return;
+                }
             }
         }
 

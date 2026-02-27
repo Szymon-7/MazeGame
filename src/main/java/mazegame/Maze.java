@@ -25,6 +25,9 @@ public class Maze {
         instance = this;
     }
 
+    public void resetLevel() {
+        this.mazeLevel = -1;
+    }
 
     public int getRows() { return rows; }
     public int getCols() { return cols; }
