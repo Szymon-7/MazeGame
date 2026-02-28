@@ -50,6 +50,7 @@ public class Game extends Pane {
     private StackPane shopOverlay;
     private Button buyLanternButton;
     private Button buySpeedButton;
+    private Button buyHealthButton;
     private Button buyPickaxeButton;
     private Button buyBagButton;
     private Label coinsLabel;
@@ -140,6 +141,17 @@ public class Game extends Pane {
             else { audio.playShopErr(); }
         });
 
+        buyHealthButton = createShopButton("Health " + player.getMaxHealthLevel() + " Upgrade (+Health)", 5, e -> {
+            if (player.getCoins() >= 5) {
+                player.addCoins(-5);
+                player.upgradeMaxHealth();
+                buyHealthButton.setText("Health " + player.getMaxHealthLevel() + " Upgrade (+Health) - 5 Coins");
+                coinsLabel.setText("Coins: " + player.getCoins());
+                audio.playShopBuy();
+            }
+            else { audio.playShopErr(); }
+        });
+
         buyPickaxeButton = createShopButton("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use)", 10, e -> {
             if (player.getCoins() >= 10 && player.addPickaxe()) {
                 player.addCoins(-10);
@@ -161,7 +173,7 @@ public class Game extends Pane {
             else { audio.playShopErr(); }
         });
 
-        VBox content = new VBox(25, title, coinsLabel, exitHint, buyLanternButton, buySpeedButton, buyPickaxeButton, buyBagButton);
+        VBox content = new VBox(25, title, coinsLabel, exitHint, buyLanternButton, buySpeedButton, buyHealthButton, buyPickaxeButton, buyBagButton);
         content.setAlignment(Pos.CENTER);
         content.getStyleClass().add("shop-content");
 
@@ -262,6 +274,7 @@ public class Game extends Pane {
         coinsLabel.setText("Coins: " + player.getCoins());
         buyLanternButton.setText("Lantern " + player.getLanternLevel() + " Upgrade (+Vision) - 5 Coins");
         buySpeedButton.setText("Shoes " + player.getSpeedLevel() + " Upgrade (+Speed) - 5 Coins");
+        buyHealthButton.setText("Health " + player.getMaxHealthLevel() + " Upgrade (+Health) - 5 Coins");
         buyPickaxeButton.setText("Pickaxes: " + player.getPickaxes() + " (Break walls - 1 use) - 10 Coins");
         buyBagButton.setText("Bag " + player.getBagLevel() + " Upgrade (Hold more pickaxes) - 10 Coins");
     }

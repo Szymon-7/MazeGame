@@ -14,8 +14,9 @@ public class Player {
     private int lanternLevel = 1;
     private int pickaxes = 0;
     private int bagLevel = 1;
+    private int maxHealthLevel = 1;
+    private static final int BASE_HEALTH = 2;
 
-    private int maxHealth = 3;
     private int currentHealth = 3;
     private double invincibilityTimer = 0;
     private boolean isVisible = true;
@@ -80,6 +81,11 @@ public class Player {
     public void upgradeSpeed() { speedLevel++; }
     public int getBagLevel() { return bagLevel; }
     public void upgradeBag() { bagLevel++; }
+    public int getMaxHealthLevel() { return maxHealthLevel; }
+    public void upgradeMaxHealth() { 
+        maxHealthLevel++; 
+        currentHealth++; // Heal by 1 on upgrade
+    }
 
     public int getPickaxes() { return pickaxes; }
     public boolean addPickaxe() { 
@@ -91,10 +97,10 @@ public class Player {
     }
 
     public int getHealth() { return currentHealth; }
-    public int getMaxHealth() { return maxHealth; }
+    public int getMaxHealth() { return BASE_HEALTH + maxHealthLevel; }
     public boolean isInvincible() { return invincibilityTimer > 0; }
     public void resetHealth() { 
-        currentHealth = maxHealth;
+        currentHealth = getMaxHealth();
         invincibilityTimer = 0;
         isVisible = true;
     }
@@ -112,6 +118,8 @@ public class Player {
         lanternLevel = 1;
         pickaxes = 0;
         bagLevel = 1;
+        maxHealthLevel = 1;
+        currentHealth = getMaxHealth();
     }
 
     public void render(GraphicsContext gc, double offsetX, double offsetY) {
