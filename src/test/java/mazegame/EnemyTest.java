@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EnemyTest {
 
     @Test
-    void enemyCountTest() {
+    void enemyMoveTest() {
         Maze m = new Maze();
         m.resetMaze(false);
         m.resetMaze(false);
@@ -24,5 +24,22 @@ public class EnemyTest {
 
         e.update(1, cs);
         assertTrue(e.getX() == 140 ^ e.getX() == 60 ^ e.getY() == 140 ^ e.getY() == 60);
+    }
+
+    @Test
+    void enemyMoveBlockedTest() {
+        Maze m = new Maze();
+        m.resetMaze(false);
+
+        CollisionSystem cs = new CollisionSystem(m, null, null);
+        Enemy e = new Enemy(66, 66);
+        Cell c = m.getGrid()[1][1];
+        c.left = true;
+        c.right = true;
+        c.top = true;
+        c.bottom = true;
+
+        e.update(2, cs);
+        assertTrue(e.getX() == 66 && e.getY() == 66); // Same spot
     }
 }
