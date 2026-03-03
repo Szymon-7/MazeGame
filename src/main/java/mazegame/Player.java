@@ -2,6 +2,7 @@ package mazegame;
 
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
+import mazegame.Maze.Direction;
 
 public class Player {
 
@@ -17,6 +18,8 @@ public class Player {
     private int maxHealthLevel = 1;
     private static final int BASE_HEALTH = 2;
 
+    private Direction direction = Direction.DOWN;
+
     private int currentHealth = 3;
     private double invincibilityTimer = 0;
     private boolean isVisible = true;
@@ -30,7 +33,6 @@ public class Player {
     private Image downSprite;
     private Image leftSprite;
     private Image rightSprite;
-    private Image currentSprite;
 
     private final double FRAME_DURATION = 0.2;
     private final int FRAME_COUNT = 6;
@@ -43,7 +45,6 @@ public class Player {
             this.downSprite = loadImage("/sprites/character/moveDown.png");
             this.leftSprite = loadImage("/sprites/character/moveLeft.png");
             this.rightSprite = loadImage("/sprites/character/moveRight.png");
-            this.currentSprite = downSprite;
         }
     }
 
@@ -125,8 +126,18 @@ public class Player {
     public void render(GraphicsContext gc, double offsetX, double offsetY) {
         if (!isVisible) return; // Blinking effect
         
+        Image sprite = downSprite;
+        switch (direction) {
+            case UP:    sprite = upSprite; break;
+            case DOWN:  sprite = downSprite; break;
+            case LEFT:  sprite = leftSprite; break;
+            case RIGHT: sprite = rightSprite; break;
+        }
+
+        if (sprite == null) return;
+        
         gc.drawImage(
-            currentSprite,          // spritesheet for that direction
+            sprite,                 // spritesheet for that direction
             currentFrame * 20, 0,   // top-left corner of the frame in the sheet
             20, 20,                 // size of the frame in the sheet
             x + offsetX,            // where to draw on canvas
@@ -138,23 +149,26 @@ public class Player {
 
     public void moveUp(double distance) {
         setY(y - distance);
-        currentSprite = upSprite;
+        direction = Direction.UP;
     }
 
     public void moveDown(double distance) {
         setY(y + distance);
-        currentSprite = downSprite;
+        direction = Direction.DOWN;
     }
 
     public void moveLeft(double distance) {
         setX(x - distance);
-        currentSprite = leftSprite;
+        direction = Direction.LEFT;
     }
 
     public void moveRight(double distance) {
         setX(x + distance);
-        currentSprite = rightSprite;
+        direction = Direction.RIGHT;
     }
+
+    public Direction getDirection() { return direction; }
+    public void setDirection(Direction d) { this.direction = d; }
 
     public void updateAnimation(double dt, boolean isMoving) {
         footstep = false;
@@ -222,19 +236,19 @@ public class Player {
         boolean wallBreaks = false;
 
         // Sprite facing direction with 2 edge cases (if actually in bounds & if wall is actually there)
-        if (currentSprite == upSprite && row > 0 && current.top) {
+        if (direction == Direction.UP && row > 0 && current.top) {
             maze.removeWall(current, grid[row - 1][col]);
             wallBreaks = true;
         }
-        else if (currentSprite == downSprite && row < (maze.getRows() - 1) && current.bottom) {
+        else if (direction == Direction.DOWN && row < (maze.getRows() - 1) && current.bottom) {
             maze.removeWall(current, grid[row + 1][col]);
             wallBreaks = true;
         }
-        else if (currentSprite == leftSprite && col > 0 && current.left) {
+        else if (direction == Direction.LEFT && col > 0 && current.left) {
             maze.removeWall(current, grid[row][col - 1]);
             wallBreaks = true;
         }
-        else if (currentSprite == rightSprite && col < maze.getCols() - 1 && current.right) {
+        else if (direction == Direction.RIGHT && col < maze.getCols() - 1 && current.right) {
             maze.removeWall(current, grid[row][col + 1]);
             wallBreaks = true;
         }

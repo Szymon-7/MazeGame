@@ -2,6 +2,7 @@ package mazegame;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import mazegame.Maze.Direction;
 
 public class PlayerTest {
 
@@ -228,11 +229,31 @@ public class PlayerTest {
         Cell[][] grid = m.getGrid();
         grid[0][0].right = true;
 
-        p.moveRight(0);
+        p.setDirection(Direction.RIGHT);
         p.pickaxeWall(m, null);
 
         assertFalse(grid[0][0].right);
         assertEquals(0, p.getPickaxes());
+    }
+
+    @Test
+    void pickaxeWallSuccessUp() {
+        Maze m = new Maze();
+        m.resetMaze(false);
+        Player p = new Player(false);
+        p.addPickaxe();
+
+        // Place player in cell [1][1] (y starts at 50, middle of maze)
+        p.setX(75 - p.getSize()/2.0);
+        p.setY(75 - p.getSize()/2.0);
+        
+        Cell[][] grid = m.getGrid();
+        grid[1][1].top = true;
+
+        p.setDirection(Direction.UP);
+        p.pickaxeWall(m, null);
+
+        assertFalse(grid[1][1].top);
     }
 
     @Test
@@ -248,7 +269,7 @@ public class PlayerTest {
         Cell[][] grid = m.getGrid();
         grid[0][0].top = true;
 
-        p.moveUp(0);
+        p.setDirection(Direction.UP);
         p.pickaxeWall(m, null);
 
         assertTrue(grid[0][0].top);

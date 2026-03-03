@@ -29,6 +29,10 @@ public class Maze {
         this.mazeLevel = -1;
     }
 
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
+
     public int getRows() { return rows; }
     public int getCols() { return cols; }
     public Cell[][] getGrid() { return grid; }
