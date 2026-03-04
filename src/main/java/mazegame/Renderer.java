@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
@@ -104,18 +105,15 @@ public class Renderer {
     }
 
     private void drawCellBackground(double offsetX, double offsetY, int cellsWide, int cellsHigh) {
-        double tileWidth = maze.getCellSize() * cellsWide;
-        double tileHeight = maze.getCellSize() * cellsHigh;
+        double worldWidth = maze.getCols() * maze.getCellSize();
+        double worldHeight = maze.getRows() * maze.getCellSize();
+        double patternW = maze.getCellSize() * cellsWide;
+        double patternH = maze.getCellSize() * cellsHigh;
 
-        for(int row = 0; row < maze.getRows(); row += cellsHigh) {
-            for(int col = 0; col < maze.getCols(); col += cellsWide) {
-                double x = col * maze.getCellSize() + offsetX;
-                double y = row * maze.getCellSize() + offsetY;
+        ImagePattern floorPattern = new ImagePattern(floorTexture, offsetX, offsetY, patternW, patternH, false);
 
-                // Casting to int fixes separation lines in the floor
-                gc.drawImage(floorTexture, (int)x, (int)y, (int)tileWidth, (int)tileHeight);
-            }
-        }
+        gc.setFill(floorPattern);
+        gc.fillRect(offsetX, offsetY, worldWidth, worldHeight);
     }
 
     private void drawFog(GraphicsContext gc, double centerX, double centerY, double radius) {
