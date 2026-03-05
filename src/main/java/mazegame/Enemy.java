@@ -24,6 +24,8 @@ public class Enemy {
 
     public double getX() { return x; }
     public double getY() { return y; }
+    public double getDx() { return dx; }
+    public double getDy() { return dy; }
     public int getSize() { return size; }
 
     private void pickNewDirection() {

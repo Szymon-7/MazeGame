@@ -42,4 +42,19 @@ public class EnemyTest {
         e.update(2, cs);
         assertTrue(e.getX() == 66 && e.getY() == 66); // Same spot
     }
+
+    @Test
+    void enemyChangesDirectionOnTimer() {
+        Maze m = new Maze();
+        m.resetMaze(false);
+        CollisionSystem cs = new CollisionSystem(m, null, null);
+        Enemy e = new Enemy(75, 75);
+        
+        double startDx = e.getDx();
+        double startDy = e.getDy();
+        
+        e.update(100.0, cs); 
+        
+        assertFalse(e.getDx() == startDx && e.getDy() == startDy, "Direction should change after timer expired");
+    }
 }
