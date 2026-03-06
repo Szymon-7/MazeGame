@@ -434,13 +434,7 @@ public class Game extends Pane {
         for (Enemy enemy : enemies) {
             enemy.update(dt, collision);
             
-            // Check collision with player
-            double dx = player.getX() - enemy.getX();
-            double dy = player.getY() - enemy.getY();
-            double distanceSq = dx*dx + dy*dy;
-            double minDist = (player.getSize()/2.0 + enemy.getSize()/2.0);
-            
-            if (distanceSq < minDist * minDist) {
+            if (collision.checkEnemyCollision(enemy)) {
                 // Player hit, take damage and check game over
                 player.takeDamage(1);
                 if (player.getHealth() <= 0) {

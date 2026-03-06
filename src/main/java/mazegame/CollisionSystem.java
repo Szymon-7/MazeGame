@@ -137,4 +137,13 @@ public class CollisionSystem {
 
         return playerRow == maze.getExit().row && playerCol == maze.getExit().col;
     }
+
+    public boolean checkEnemyCollision(Enemy enemy) {
+        double dx = player.getX() - enemy.getX();
+        double dy = player.getY() - enemy.getY();
+        double distanceSq = dx*dx + dy*dy;
+        double minDist = (player.getSize()/2.0 + enemy.getSize()/2.0);
+        
+        return distanceSq < minDist * minDist;
+    }
 }
