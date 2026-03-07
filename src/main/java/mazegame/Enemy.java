@@ -29,6 +29,14 @@ public class Enemy {
     public int getSize() { return size; }
 
     private void pickNewDirection() {
+        // 30% idle chance
+        if (random.nextDouble() < 0.3 && (dx != 0 || dy != 0)) {
+            dx = 0;
+            dy = 0;
+            changeDirectionTimer = 1.0 + random.nextDouble() * 1.0;
+            return;
+        }
+
         int oldDir = -1;
         if (dy == -1) oldDir = 0;
         else if (dy == 1) oldDir = 1;
