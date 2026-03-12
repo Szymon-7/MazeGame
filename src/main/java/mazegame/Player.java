@@ -75,20 +75,29 @@ public class Player {
 
     public int getCoins() { return coins; }
     public void addCoins(int num) { coins = Math.max(0, coins + num); }
+    public void setCoins(int num) { coins = num; }
 
     public int getLanternLevel() { return lanternLevel; }
+    public void setLanternLevel(int level) { lanternLevel = level; }
     public void upgradeLantern() { lanternLevel++; }
     public int getSpeedLevel() { return speedLevel; }
+    public void setSpeedLevel(int level) { speedLevel = level; }
     public void upgradeSpeed() { speedLevel++; }
     public int getBagLevel() { return bagLevel; }
+    public void setBagLevel(int level) { bagLevel = level; }
     public void upgradeBag() { bagLevel++; }
     public int getMaxHealthLevel() { return maxHealthLevel; }
+    public void setMaxHealthLevel(int level) { 
+        maxHealthLevel = level; 
+        currentHealth = getMaxHealth(); // Refresh health on load
+    }
     public void upgradeMaxHealth() { 
         maxHealthLevel++; 
         currentHealth++; // Heal by 1 on upgrade
     }
 
     public int getPickaxes() { return pickaxes; }
+    public void setPickaxes(int num) { pickaxes = num; }
     public boolean addPickaxe() { 
         if (pickaxes < bagLevel) {
             pickaxes++; 

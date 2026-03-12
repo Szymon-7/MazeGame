@@ -37,6 +37,7 @@ public class Maze {
     public int getCols() { return cols; }
     public Cell[][] getGrid() { return grid; }
     public int getMazeLevel() { return mazeLevel; }
+    public void setMazeLevel(int level) { this.mazeLevel = level; }
     public int getCellSize() { return cellSize; }
     public int getWallThickness() { return wallThickness; }
     public Shop getShop() { return shop; }

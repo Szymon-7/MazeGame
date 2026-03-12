@@ -100,6 +100,7 @@ public class Game extends Pane {
     public Coin getCoin() { return coin; }
     public AudioManager getAudio() { return audio; }
     public List<Enemy> getEnemies() { return enemies; }
+    public double getTimePlayed() { return timePlayed; }
     public boolean inShop() { return inShop; }
 
     public void setMoveUp(boolean value) { moveUp = value; }
@@ -208,11 +209,23 @@ public class Game extends Pane {
         resumeButton.getStyleClass().add("shop-button");
         resumeButton.setOnAction(e -> togglePause());
 
+        Button saveButton = new Button("Save Game");
+        saveButton.getStyleClass().add("shop-button");
+        saveButton.setOnAction(e -> { SaveSystem.saveGame(this); togglePause(); });
+
+        Button loadButton = new Button("Load Game");
+        loadButton.getStyleClass().add("shop-button");
+        loadButton.setOnAction(e -> { 
+            SaveData data = SaveSystem.loadGame();
+            if (data != null) loadSave(data);
+            togglePause();
+        });
+
         Button exitButton = new Button("Exit Game");
         exitButton.getStyleClass().add("shop-button");
         exitButton.setOnAction(e -> { javafx.application.Platform.exit(); });
 
-        VBox content = new VBox(30, title, timerLabel, mazeLevelLabel, resumeButton, exitButton);
+        VBox content = new VBox(30, title, timerLabel, mazeLevelLabel, resumeButton, saveButton, loadButton, exitButton);
         content.setAlignment(Pos.CENTER);
 
         pauseOverlay = new StackPane(content);
@@ -268,6 +281,20 @@ public class Game extends Pane {
         
         audio.playStart();
         playStartFade();
+    }
+
+    public void loadSave(SaveData data) {
+        player.setCoins(data.coins);
+        player.setLanternLevel(data.lanternLevel);
+        player.setSpeedLevel(data.speedLevel);
+        player.setMaxHealthLevel(data.healthLevel);
+        player.setBagLevel(data.bagLevel);
+        player.setPickaxes(data.pickaxes);
+        
+        maze.setMazeLevel(data.mazeLevel - 1); // -1 because reset() increments it
+        reset();
+        
+        refreshShopUI();
     }
 
     private void refreshShopUI() {
